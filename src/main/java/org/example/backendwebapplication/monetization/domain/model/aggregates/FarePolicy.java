@@ -1,9 +1,11 @@
 package org.example.backendwebapplication.monetization.domain.model.aggregates;
 
+import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class FarePolicy {
+public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
 
     private UUID farePolicyId;
     private BigDecimal baseFare;

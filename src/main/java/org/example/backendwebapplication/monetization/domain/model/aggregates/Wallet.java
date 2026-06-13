@@ -1,11 +1,10 @@
-package org.example.backendwebapplication.monetization.domain.model.aggregates;
-
 import org.example.backendwebapplication.monetization.domain.model.valueobjects.WalletStatus;
+import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class Wallet {
+public class Wallet extends AbstractDomainAggregateRoot<Wallet> {
 
     private UUID walletId;
     private UUID driverId;
