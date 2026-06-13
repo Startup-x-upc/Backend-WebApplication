@@ -1,5 +1,7 @@
 package org.example.backendwebapplication.monetization.domain.model.aggregates;
 
+import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
