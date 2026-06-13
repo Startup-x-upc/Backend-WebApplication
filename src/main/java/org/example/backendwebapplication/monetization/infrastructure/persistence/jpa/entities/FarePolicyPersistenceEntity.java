@@ -1,15 +1,15 @@
 package org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import org.example.backendwebapplication.shared.infrastructure.persistence.jpa.entities.AuditableAbstractPersistenceEntity;
+
 import java.math.BigDecimal;
 
+@Getter
 @Entity
 @Table(name = "fare_policies")
-public class FarePolicyPersistenceEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class FarePolicyPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(nullable = false)
     private BigDecimal baseFare;
@@ -22,12 +22,6 @@ public class FarePolicyPersistenceEntity {
 
     public FarePolicyPersistenceEntity() {}
 
-    public Long getId() { return id; }
-    public BigDecimal getBaseFare() { return baseFare; }
-    public BigDecimal getPricePerKm() { return pricePerKm; }
-    public BigDecimal getMinimumFare() { return minimumFare; }
-
-    public void setId(Long id) { this.id = id; }
     public void setBaseFare(BigDecimal baseFare) { this.baseFare = baseFare; }
     public void setPricePerKm(BigDecimal pricePerKm) { this.pricePerKm = pricePerKm; }
     public void setMinimumFare(BigDecimal minimumFare) { this.minimumFare = minimumFare; }
