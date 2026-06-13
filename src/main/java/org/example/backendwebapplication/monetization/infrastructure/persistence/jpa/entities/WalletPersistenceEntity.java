@@ -1,18 +1,17 @@
 package org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import org.example.backendwebapplication.shared.infrastructure.persistence.jpa.entities.AuditableAbstractPersistenceEntity;
 import org.example.backendwebapplication.monetization.domain.model.valueobjects.WalletStatus;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "wallets")
-public class WalletPersistenceEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class WalletPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(nullable = false)
     private UUID driverId;
@@ -26,12 +25,6 @@ public class WalletPersistenceEntity {
 
     public WalletPersistenceEntity() {}
 
-    public Long getId() { return id; }
-    public UUID getDriverId() { return driverId; }
-    public BigDecimal getBalance() { return balance; }
-    public WalletStatus getStatus() { return status; }
-
-    public void setId(Long id) { this.id = id; }
     public void setDriverId(UUID driverId) { this.driverId = driverId; }
     public void setBalance(BigDecimal balance) { this.balance = balance; }
     public void setStatus(WalletStatus status) { this.status = status; }
