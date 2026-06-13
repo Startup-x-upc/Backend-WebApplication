@@ -1,0 +1,9 @@
+package org.example.backendwebapplication.monetization.interfaces.rest.resources;
+
+import java.math.BigDecimal;
+
+public record FarePolicyResponse(
+        BigDecimal baseFare,
+        BigDecimal pricePerKm,
+        BigDecimal minimumFare
+) {}
