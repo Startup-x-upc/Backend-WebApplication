@@ -1,18 +1,17 @@
 package org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import org.example.backendwebapplication.shared.infrastructure.persistence.jpa.entities.AuditableAbstractPersistenceEntity;
 import org.example.backendwebapplication.monetization.domain.model.valueobjects.TransactionType;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "wallet_transactions")
-public class WalletTransactionPersistenceEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class WalletTransactionPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(nullable = false)
     private UUID walletId;
@@ -32,14 +31,6 @@ public class WalletTransactionPersistenceEntity {
 
     public WalletTransactionPersistenceEntity() {}
 
-    public Long getId() { return id; }
-    public UUID getWalletId() { return walletId; }
-    public UUID getTripId() { return tripId; }
-    public TransactionType getType() { return type; }
-    public BigDecimal getAmount() { return amount; }
-    public BigDecimal getResultingBalance() { return resultingBalance; }
-
-    public void setId(Long id) { this.id = id; }
     public void setWalletId(UUID walletId) { this.walletId = walletId; }
     public void setTripId(UUID tripId) { this.tripId = tripId; }
     public void setType(TransactionType type) { this.type = type; }
