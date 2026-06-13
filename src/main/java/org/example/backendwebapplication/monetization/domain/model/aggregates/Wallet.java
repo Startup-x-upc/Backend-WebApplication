@@ -1,3 +1,4 @@
+package org.example.backendwebapplication.monetization.domain.model.aggregates;
 import org.example.backendwebapplication.monetization.domain.model.valueobjects.WalletStatus;
 import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 

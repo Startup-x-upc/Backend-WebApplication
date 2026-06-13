@@ -4,6 +4,7 @@ import org.example.backendwebapplication.shared.domain.model.aggregates.Abstract
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 
 public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
 
