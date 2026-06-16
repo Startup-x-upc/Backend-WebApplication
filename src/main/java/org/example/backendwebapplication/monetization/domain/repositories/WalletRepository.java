@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface WalletRepository {
     Wallet save(Wallet wallet);
     Optional<Wallet> findByDriverId(UUID driverId);
+    Optional<Wallet> findByWalletId(UUID walletId);
 }
