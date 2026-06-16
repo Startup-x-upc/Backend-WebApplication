@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record TopUpFailureResource(
-        UUID driverId,
         BigDecimal amount,
         String reason
 ) {}
