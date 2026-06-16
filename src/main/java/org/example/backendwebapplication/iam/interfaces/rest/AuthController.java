@@ -12,7 +12,6 @@ import org.example.backendwebapplication.iam.domain.model.commands.LoginCommand;
 import org.example.backendwebapplication.iam.domain.model.commands.RegisterDriverCommand;
 import org.example.backendwebapplication.iam.domain.model.commands.RegisterPassengerCommand;
 import org.example.backendwebapplication.iam.domain.model.queries.GetProfileByUserIdQuery;
-import org.example.backendwebapplication.iam.domain.model.queries.GetUserByEmailQuery;
 import org.example.backendwebapplication.iam.domain.model.queries.GetUserByIdQuery;
 import org.example.backendwebapplication.iam.infrastructure.security.JwtService;
 import org.example.backendwebapplication.iam.interfaces.rest.resources.*;
@@ -165,12 +164,4 @@ public class AuthController {
                 .body(new ErrorResource("UNAUTHORIZED", "User not found"));
     }
 
-    // ── Check Email ───────────────────────────────────────────────────
-
-    @GetMapping("/auth/check-email")
-    @Operation(summary = "Check if an email is already registered")
-    public ResponseEntity<CheckEmailResponse> checkEmail(@RequestParam String email) {
-        var exists = userQueryService.handle(new GetUserByEmailQuery(email)).isPresent();
-        return ResponseEntity.ok(new CheckEmailResponse(exists));
-    }
 }

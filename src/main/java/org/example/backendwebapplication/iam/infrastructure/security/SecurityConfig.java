@@ -48,7 +48,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/register/driver").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
-                .requestMatchers(HttpMethod.GET, "/auth/check-email").permitAll()
 
                 // Swagger / OpenAPI
                 .requestMatchers(
