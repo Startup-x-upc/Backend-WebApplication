@@ -56,7 +56,7 @@ public class ProfilesController {
                             "Profile not found for the current user"));
         }
 
-        var resource = ProfileResourceAssembler.toResource(profile.get(), user.get());
+        var resource = ProfileResourceAssembler.toMyProfileResource(profile.get(), user.get());
         return ResponseEntity.ok(resource);
     }
 

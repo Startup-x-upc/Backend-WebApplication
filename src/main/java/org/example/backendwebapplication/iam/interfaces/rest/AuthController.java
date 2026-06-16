@@ -2,6 +2,9 @@ package org.example.backendwebapplication.iam.interfaces.rest;
 
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +47,8 @@ public class AuthController {
     @PostMapping("/auth/register/passenger")
     @Operation(summary = "Register a new passenger",
                description = "Creates a PASSENGER user and its associated profile")
+    @ApiResponse(responseCode = "201", description = "User registered successfully",
+                 content = @Content(schema = @Schema(implementation = AuthResponseResource.class)))
     public ResponseEntity<?> registerPassenger(@Valid @RequestBody RegisterPassengerResource resource) {
         var command = new RegisterPassengerCommand(
                 resource.email(), resource.password(), resource.fullName());
@@ -64,7 +69,7 @@ public class AuthController {
 
         var response = new AuthResponseResource(
                 UserResourceAssembler.toResource(user),
-                profile != null ? ProfileResourceAssembler.toResource(profile, user) : null,
+                profile != null ? ProfileResourceAssembler.toResource(profile) : null,
                 accessToken, refreshToken);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -75,6 +80,8 @@ public class AuthController {
     @PostMapping("/auth/register/driver")
     @Operation(summary = "Register a new driver",
                description = "Creates a DRIVER user, profile, and emits DriverRegisteredEvent")
+    @ApiResponse(responseCode = "201", description = "Driver registered successfully",
+                 content = @Content(schema = @Schema(implementation = AuthResponseResource.class)))
     public ResponseEntity<?> registerDriver(@Valid @RequestBody RegisterDriverResource resource) {
         var command = new RegisterDriverCommand(
                 resource.email(), resource.password(), resource.fullName(),
@@ -96,7 +103,7 @@ public class AuthController {
 
         var response = new AuthResponseResource(
                 UserResourceAssembler.toResource(user),
-                profile != null ? ProfileResourceAssembler.toResource(profile, user) : null,
+                profile != null ? ProfileResourceAssembler.toResource(profile) : null,
                 accessToken, refreshToken);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -107,6 +114,8 @@ public class AuthController {
     @PostMapping("/auth/login")
     @Operation(summary = "Authenticate a user",
                description = "Validates credentials and returns tokens")
+    @ApiResponse(responseCode = "200", description = "Login successful",
+                 content = @Content(schema = @Schema(implementation = AuthResponseResource.class)))
     public ResponseEntity<?> login(@Valid @RequestBody LoginResource resource) {
         var command = new LoginCommand(resource.email(), resource.password());
         var result = userCommandService.handle(command);
@@ -131,6 +140,8 @@ public class AuthController {
     @PostMapping("/auth/refresh")
     @Operation(summary = "Refresh an expired access token",
                description = "Rotates the refresh token and issues a new access/refresh pair")
+    @ApiResponse(responseCode = "200", description = "New token pair issued",
+                 content = @Content(schema = @Schema(implementation = TokenRefreshResponse.class)))
     public ResponseEntity<?> refresh(@Valid @RequestBody RefreshTokenRequest resource) {
         try {
             var tokenPair = jwtService.refreshAccessToken(resource.refreshToken());
@@ -147,6 +158,8 @@ public class AuthController {
     @GetMapping("/auth/me")
     @Operation(summary = "Get current authenticated user",
                description = "Returns the user from the JWT access token")
+    @ApiResponse(responseCode = "200", description = "Current authenticated user",
+                 content = @Content(schema = @Schema(implementation = UserResource.class)))
     public ResponseEntity<?> me() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {

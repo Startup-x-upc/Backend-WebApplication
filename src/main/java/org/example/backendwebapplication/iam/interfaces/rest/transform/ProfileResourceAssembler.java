@@ -2,45 +2,42 @@ package org.example.backendwebapplication.iam.interfaces.rest.transform;
 
 import org.example.backendwebapplication.iam.domain.model.aggregates.User;
 import org.example.backendwebapplication.iam.domain.model.entities.Profile;
+import org.example.backendwebapplication.iam.interfaces.rest.resources.MyProfileResource;
 import org.example.backendwebapplication.iam.interfaces.rest.resources.ProfileResource;
 
 /**
- * Stateless assembler that converts domain Profile and User aggregates
- * into {@link ProfileResource} REST responses.
- * <p>Composes the read model by merging Profile data with User's email and role.</p>
+ * Stateless assembler that converts domain Profile entities
+ * into REST response resources.
  */
 public final class ProfileResourceAssembler {
 
     private ProfileResourceAssembler() {}
 
     /**
-     * Creates a composed read model from both Profile and User.
+     * Creates a clean ProfileResource (no email/role).
      */
-    public static ProfileResource toResource(Profile profile, User user) {
+    public static ProfileResource toResource(Profile profile) {
         return new ProfileResource(
                 profile.getProfileId(),
                 profile.getUserId(),
-                user.getEmail(),
                 profile.getFullName(),
-                user.getRole().name(),
                 profile.getPhotoUrl(),
                 profile.getCreatedAt(),
                 profile.getUpdatedAt());
     }
 
     /**
-     * Creates a resource from Profile only (no User data composed).
-     * Email and role will be {@code null}.
+     * Creates a composed read model for {@code GET /users/me/profile},
+     * merging Profile data with User's email and role.
      */
-    public static ProfileResource toResource(Profile profile) {
-        return new ProfileResource(
+    public static MyProfileResource toMyProfileResource(Profile profile, User user) {
+        return new MyProfileResource(
                 profile.getProfileId(),
                 profile.getUserId(),
-                null,
+                user.getEmail(),
                 profile.getFullName(),
-                null,
+                user.getRole().name(),
                 profile.getPhotoUrl(),
-                profile.getCreatedAt(),
-                profile.getUpdatedAt());
+                profile.getCreatedAt());
     }
 }

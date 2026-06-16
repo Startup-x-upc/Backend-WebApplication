@@ -41,7 +41,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
+        // Look up the existing entity to preserve the internal Long id
+        // so JPA issues an UPDATE instead of an INSERT
+        var existing = jpa.findByUserId(user.getUserId().toString())
+                .orElse(null);
+
         var entity = UserPersistenceAssembler.toPersistence(user);
+
+        if (existing != null) {
+            entity.setId(existing.getId());
+        }
+
         var saved = jpa.save(entity);
 
         user.domainEvents().forEach(eventPublisher::publishEvent);

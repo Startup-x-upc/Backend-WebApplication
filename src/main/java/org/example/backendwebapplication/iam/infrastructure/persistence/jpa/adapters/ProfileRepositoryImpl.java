@@ -36,7 +36,17 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     @Override
     public Profile save(Profile profile) {
+        // Look up the existing entity to preserve the internal Long id
+        // so JPA issues an UPDATE instead of an INSERT
+        var existing = jpa.findByProfileId(profile.getProfileId().toString())
+                .orElse(null);
+
         var entity = ProfilePersistenceAssembler.toPersistence(profile);
+
+        if (existing != null) {
+            entity.setId(existing.getId());
+        }
+
         var saved = jpa.save(entity);
         return ProfilePersistenceAssembler.toDomain(saved);
     }
