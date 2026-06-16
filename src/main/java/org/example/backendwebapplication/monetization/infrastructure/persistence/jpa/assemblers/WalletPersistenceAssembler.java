@@ -10,6 +10,7 @@ public class WalletPersistenceAssembler {
         entity.setDriverId(domain.getDriverId());
         entity.setBalance(domain.getBalance());
         entity.setStatus(domain.getStatus());
+        entity.setWalletId(domain.getWalletId());
         return entity;
     }
 
@@ -18,6 +19,7 @@ public class WalletPersistenceAssembler {
         domain.setDriverId(entity.getDriverId());
         domain.setBalance(entity.getBalance());
         domain.setStatus(entity.getStatus());
+        domain.setWalletId(entity.getWalletId());
         return domain;
     }
 }

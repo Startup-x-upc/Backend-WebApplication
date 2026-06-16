@@ -12,7 +12,8 @@ public class FarePolicyResponseAssembler {
         return new FarePolicyResponse(
                 farePolicy.getBaseFare(),
                 farePolicy.getPricePerKm(),
-                farePolicy.getMinimumFare()
+                farePolicy.getMinimumFare(),
+                farePolicy.getCommissionRate()
         );
     }
 

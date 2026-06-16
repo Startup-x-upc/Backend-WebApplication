@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record ApplyRideCommissionCommand(
-        UUID driverId,
+        UUID walletId,
         UUID tripId,
         BigDecimal rideFare
 ) {}

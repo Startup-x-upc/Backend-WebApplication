@@ -9,6 +9,10 @@ import org.example.backendwebapplication.monetization.domain.repositories.FarePo
 import org.example.backendwebapplication.monetization.domain.repositories.WalletRepository;
 import org.example.backendwebapplication.monetization.domain.repositories.WalletTransactionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 public class MonetizationCommandServiceImpl {
@@ -27,24 +31,27 @@ public class MonetizationCommandServiceImpl {
 
     public FarePolicy handle(ConfigureFarePolicyCommand command) {
         FarePolicy policy = farePolicyRepository.getCurrent().orElse(new FarePolicy());
-        policy.configure(command.baseFare(), command.pricePerKm(), command.minimumFare());
+        policy.configure(command.baseFare(), command.pricePerKm(), command.minimumFare(), command.commissionRate());
         return farePolicyRepository.save(policy);
     }
 
+    @Transactional
     public Wallet handle(TopUpWalletCommand command) {
-        Wallet wallet = walletRepository.findByDriverId(command.driverId())
-                .orElse(new Wallet(command.driverId()));
+        Wallet wallet = walletRepository.findByWalletId(command.walletId())
+                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+        BigDecimal newBalance = wallet.getBalance().add(command.amount()).setScale(2, RoundingMode.HALF_UP);
         wallet.topUp(command.amount());
         Wallet saved = walletRepository.save(wallet);
         WalletTransaction tx = new WalletTransaction(
                 saved.getWalletId(), null,
-                TransactionType.TOP_UP, command.amount(), saved.getBalance());
+                TransactionType.TOP_UP, command.amount(), newBalance);
         walletTransactionRepository.save(tx);
         return saved;
     }
 
+    @Transactional
     public WalletTransaction handle(RegisterTopUpFailureCommand command) {
-        Wallet wallet = walletRepository.findByDriverId(command.driverId())
+        Wallet wallet = walletRepository.findByWalletId(command.walletId())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         WalletTransaction tx = new WalletTransaction(
                 wallet.getWalletId(), null,
@@ -52,14 +59,19 @@ public class MonetizationCommandServiceImpl {
         return walletTransactionRepository.save(tx);
     }
 
+    @Transactional
     public WalletTransaction handle(ApplyRideCommissionCommand command) {
-        Wallet wallet = walletRepository.findByDriverId(command.driverId())
+        Wallet wallet = walletRepository.findByWalletId(command.walletId())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
-        wallet.applyCommission(command.rideFare());
+        FarePolicy policy = farePolicyRepository.getCurrent()
+                .orElseThrow(() -> new RuntimeException("No fare policy configured"));
+        BigDecimal commission = policy.calculateCommission(command.rideFare());
+        BigDecimal newBalance = wallet.getBalance().subtract(commission).max(BigDecimal.ZERO).setScale(2, RoundingMode.HALF_UP);
+        wallet.setBalance(newBalance);
         Wallet saved = walletRepository.save(wallet);
         WalletTransaction tx = new WalletTransaction(
                 saved.getWalletId(), command.tripId(),
-                TransactionType.COMMISSION, command.rideFare(), saved.getBalance());
+                TransactionType.COMMISSION, commission.negate(), newBalance);
         return walletTransactionRepository.save(tx);
     }
 

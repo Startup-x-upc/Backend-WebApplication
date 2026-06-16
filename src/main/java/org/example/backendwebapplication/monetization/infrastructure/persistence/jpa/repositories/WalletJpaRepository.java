@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface WalletJpaRepository extends JpaRepository<WalletPersistenceEntity, Long> {
     Optional<WalletPersistenceEntity> findByDriverId(UUID driverId);
+    Optional<WalletPersistenceEntity> findByWalletId(UUID walletId);
 }

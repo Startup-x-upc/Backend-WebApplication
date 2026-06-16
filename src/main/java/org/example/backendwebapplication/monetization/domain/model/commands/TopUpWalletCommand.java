@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record TopUpWalletCommand(
-        UUID driverId,
+        UUID walletId,
         BigDecimal amount
 ) {}

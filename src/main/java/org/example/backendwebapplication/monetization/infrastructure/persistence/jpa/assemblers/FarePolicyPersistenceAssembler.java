@@ -10,6 +10,7 @@ public class FarePolicyPersistenceAssembler {
         entity.setBaseFare(domain.getBaseFare());
         entity.setPricePerKm(domain.getPricePerKm());
         entity.setMinimumFare(domain.getMinimumFare());
+        entity.setCommissionRate(domain.getCommissionRate());
         return entity;
     }
 
@@ -18,6 +19,7 @@ public class FarePolicyPersistenceAssembler {
         domain.setBaseFare(entity.getBaseFare());
         domain.setPricePerKm(entity.getPricePerKm());
         domain.setMinimumFare(entity.getMinimumFare());
+        domain.setCommissionRate(entity.getCommissionRate());
         return domain;
     }
 }

@@ -5,5 +5,6 @@ import java.math.BigDecimal;
 public record ConfigureFarePolicyCommand(
         BigDecimal baseFare,
         BigDecimal pricePerKm,
-        BigDecimal minimumFare
+        BigDecimal minimumFare,
+        BigDecimal commissionRate
 ) {}

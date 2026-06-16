@@ -23,9 +23,13 @@ public class WalletPersistenceEntity extends AuditableAbstractPersistenceEntity 
     @Enumerated(EnumType.STRING)
     private WalletStatus status;
 
+    @Column(nullable = false, unique = true)
+    private UUID walletId;
+
     public WalletPersistenceEntity() {}
 
     public void setDriverId(UUID driverId) { this.driverId = driverId; }
     public void setBalance(BigDecimal balance) { this.balance = balance; }
     public void setStatus(WalletStatus status) { this.status = status; }
+    public void setWalletId(UUID walletId) { this.walletId = walletId; }
 }

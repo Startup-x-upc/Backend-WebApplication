@@ -26,48 +26,54 @@ public class MonetizationController {
         this.queryService = queryService;
     }
 
-    @GetMapping("/fare-policy")
+    // Fare Config endpoints
+    @GetMapping("/fare-config")
     public ResponseEntity<FarePolicyResponse> getCurrentFarePolicy() {
         var result = queryService.handle(new GetCurrentFarePolicyQuery());
         return ResponseEntity.ok(FarePolicyResponseAssembler.toResponse(result));
     }
 
-    @PostMapping("/fare-policy")
+    @PutMapping("/fare-config")
     public ResponseEntity<FarePolicyResponse> configureFarePolicy(@RequestBody ConfigureFarePolicyResource resource) {
-        var command = new ConfigureFarePolicyCommand(resource.baseFare(), resource.pricePerKm(), resource.minimumFare());
+        var command = new ConfigureFarePolicyCommand(
+                resource.baseFare(),
+                resource.pricePerKm(),
+                resource.minimumFare(),
+                resource.commissionRate());
         var result = commandService.handle(command);
         return ResponseEntity.ok(FarePolicyResponseAssembler.toResponse(result));
     }
 
-    @PostMapping("/fare-policy/estimate")
+    @PostMapping("/fare-config/estimate")
     public ResponseEntity<FareQuoteResponse> estimateFare(@RequestBody EstimatedFareResource resource) {
         var result = queryService.handle(new GetEstimatedFareQuery(resource.distanceKm()));
         return ResponseEntity.ok(FarePolicyResponseAssembler.toQuoteResponse(result));
     }
 
-    @GetMapping("/wallets")
-    public ResponseEntity<WalletResponse> getWalletByDriverId(@RequestParam UUID driverId) {
+    // Wallet endpoints
+    @GetMapping("/drivers/{driverId}/wallet")
+    public ResponseEntity<WalletResponse> getWalletByDriverId(@PathVariable UUID driverId) {
         var result = queryService.handle(new GetWalletByDriverIdQuery(driverId));
         return ResponseEntity.ok(WalletResponseAssembler.toResponse(result));
     }
 
-    @PostMapping("/wallets/top-up")
-    public ResponseEntity<WalletResponse> topUpWallet(@RequestBody TopUpWalletResource resource) {
-        var command = new TopUpWalletCommand(resource.driverId(), resource.amount());
+    @PostMapping("/wallets/{walletId}/recharge")
+    public ResponseEntity<WalletResponse> rechargeWallet(@PathVariable UUID walletId, @RequestBody TopUpWalletResource resource) {
+        var command = new TopUpWalletCommand(walletId, resource.amount());
         var result = commandService.handle(command);
         return ResponseEntity.ok(WalletResponseAssembler.toResponse(result));
     }
 
-    @PostMapping("/wallets/top-up-failure")
-    public ResponseEntity<WalletTransactionResponse> registerTopUpFailure(@RequestBody TopUpFailureResource resource) {
-        var command = new RegisterTopUpFailureCommand(resource.driverId(), resource.amount(), resource.reason());
+    @PostMapping("/wallets/{walletId}/apply-commission")
+    public ResponseEntity<WalletTransactionResponse> applyCommission(@PathVariable UUID walletId, @RequestBody ApplyCommissionResource resource) {
+        var command = new ApplyRideCommissionCommand(walletId, resource.tripId(), resource.rideFare());
         var result = commandService.handle(command);
         return ResponseEntity.ok(WalletTransactionResponseAssembler.toResponse(result));
     }
 
-    @PostMapping("/wallets/commission")
-    public ResponseEntity<WalletTransactionResponse> applyCommission(@RequestBody ApplyCommissionResource resource) {
-        var command = new ApplyRideCommissionCommand(resource.driverId(), resource.tripId(), resource.rideFare());
+    @PostMapping("/wallets/{walletId}/top-up-failure")
+    public ResponseEntity<WalletTransactionResponse> registerTopUpFailure(@PathVariable UUID walletId, @RequestBody TopUpFailureResource resource) {
+        var command = new RegisterTopUpFailureCommand(walletId, resource.amount(), resource.reason());
         var result = commandService.handle(command);
         return ResponseEntity.ok(WalletTransactionResponseAssembler.toResponse(result));
     }
@@ -84,11 +90,11 @@ public class MonetizationController {
         return ResponseEntity.ok(WalletResponseAssembler.toResponse(result));
     }
 
-    @GetMapping("/wallets/{driverId}/transactions")
-    public ResponseEntity<?> getTransactionHistory(@PathVariable UUID driverId,
+    @GetMapping("/wallets/{walletId}/transactions")
+    public ResponseEntity<?> getTransactionHistory(@PathVariable UUID walletId,
                                                    @RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int size) {
-        var result = queryService.handle(new GetWalletTransactionHistoryQuery(driverId, page, size));
+        var result = queryService.handle(new GetWalletTransactionHistoryQuery(walletId, page, size));
         return ResponseEntity.ok(WalletTransactionResponseAssembler.toResponseList(result));
     }
 

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record RegisterTopUpFailureCommand(
-        UUID driverId,
+        UUID walletId,
         BigDecimal amount,
         String reason
 ) {}

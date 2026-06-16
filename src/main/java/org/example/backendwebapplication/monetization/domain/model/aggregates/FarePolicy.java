@@ -12,20 +12,23 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
     private BigDecimal baseFare;
     private BigDecimal pricePerKm;
     private BigDecimal minimumFare;
+    private BigDecimal commissionRate;
 
     public FarePolicy() {}
 
-    public FarePolicy(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare) {
+    public FarePolicy(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare, BigDecimal commissionRate) {
         this.farePolicyId = UUID.randomUUID();
         this.baseFare = baseFare;
         this.pricePerKm = pricePerKm;
         this.minimumFare = minimumFare;
+        this.commissionRate = commissionRate;
     }
 
-    public void configure(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare) {
+    public void configure(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare, BigDecimal commissionRate) {
         this.baseFare = baseFare;
         this.pricePerKm = pricePerKm;
         this.minimumFare = minimumFare;
+        this.commissionRate = commissionRate;
     }
 
     public BigDecimal calculate(BigDecimal distanceKm) {
@@ -33,13 +36,19 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
         return calculated.compareTo(this.minimumFare) < 0 ? this.minimumFare : calculated;
     }
 
+    public BigDecimal calculateCommission(BigDecimal fare) {
+        return fare.multiply(this.commissionRate).setScale(2, java.math.RoundingMode.HALF_UP);
+    }
+
     public UUID getFarePolicyId() { return farePolicyId; }
     public BigDecimal getBaseFare() { return baseFare; }
     public BigDecimal getPricePerKm() { return pricePerKm; }
     public BigDecimal getMinimumFare() { return minimumFare; }
+    public BigDecimal getCommissionRate() { return commissionRate; }
 
     public void setFarePolicyId(UUID farePolicyId) { this.farePolicyId = farePolicyId; }
     public void setBaseFare(BigDecimal baseFare) { this.baseFare = baseFare; }
     public void setPricePerKm(BigDecimal pricePerKm) { this.pricePerKm = pricePerKm; }
     public void setMinimumFare(BigDecimal minimumFare) { this.minimumFare = minimumFare; }
+    public void setCommissionRate(BigDecimal commissionRate) { this.commissionRate = commissionRate; }
 }
