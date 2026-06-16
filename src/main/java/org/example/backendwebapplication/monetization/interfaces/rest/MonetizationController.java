@@ -34,7 +34,11 @@ public class MonetizationController {
 
     @PostMapping("/fare-policy")
     public ResponseEntity<FarePolicyResponse> configureFarePolicy(@RequestBody ConfigureFarePolicyResource resource) {
-        var command = new ConfigureFarePolicyCommand(resource.baseFare(), resource.pricePerKm(), resource.minimumFare());
+        var command = new ConfigureFarePolicyCommand(
+                resource.baseFare(),
+                resource.pricePerKm(),
+                resource.minimumFare(),
+                resource.commissionRate());
         var result = commandService.handle(command);
         return ResponseEntity.ok(FarePolicyResponseAssembler.toResponse(result));
     }
