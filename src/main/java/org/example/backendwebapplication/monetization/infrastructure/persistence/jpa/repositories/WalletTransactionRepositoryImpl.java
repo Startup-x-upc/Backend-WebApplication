@@ -28,7 +28,7 @@ public class WalletTransactionRepositoryImpl implements WalletTransactionReposit
 
     @Override
     public List<WalletTransaction> findByWalletId(UUID walletId, int page, int size) {
-        return jpaRepository.findByWalletId(walletId).stream()
+        return jpaRepository.findByWalletId(walletId.toString()).stream()
                 .skip((long) page * size)
                 .limit(size)
                 .map(WalletTransactionPersistenceAssembler::toDomain)

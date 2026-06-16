@@ -7,8 +7,7 @@ import java.util.UUID;
 
 /**
  * Persistence entity for refresh tokens.
- * <p>NOT a domain aggregate — lives exclusively in the infrastructure layer.
- * Stores opaque refresh tokens with their expiry and revocation status.</p>
+ * <p>NOT a domain aggregate — lives exclusively in the infrastructure layer.</p>
  */
 @Entity
 @Table(name = "refresh_tokens")
@@ -21,8 +20,8 @@ public class RefreshTokenEntity {
     @Column(nullable = false, unique = true, length = 512)
     private String token;
 
-    @Column(nullable = false)
-    private UUID userId;
+    @Column(name = "user_id", nullable = false, length = 36)
+    private String userId;
 
     @Column(nullable = false)
     private Instant expiryDate;
@@ -34,16 +33,14 @@ public class RefreshTokenEntity {
 
     public RefreshTokenEntity(String token, UUID userId, Instant expiryDate) {
         this.token = token;
-        this.userId = userId;
+        this.userId = userId.toString();
         this.expiryDate = expiryDate;
         this.revoked = false;
     }
 
-    // ── Getters / Setters ─────────────────────────────────────────────
-
     public Long getId()                     { return id; }
     public String getToken()                { return token; }
-    public UUID getUserId()                 { return userId; }
+    public String getUserId()               { return userId; }
     public Instant getExpiryDate()          { return expiryDate; }
     public boolean isRevoked()              { return revoked; }
     public void setRevoked(boolean revoked) { this.revoked = revoked; }

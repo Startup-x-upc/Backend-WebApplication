@@ -27,7 +27,6 @@ public class WalletRepositoryImpl implements WalletRepository {
         WalletPersistenceEntity entity = WalletPersistenceAssembler.toEntity(wallet);
         WalletPersistenceEntity saved = jpaRepository.save(entity);
 
-        // Publish domain events registered on the aggregate
         wallet.domainEvents().forEach(eventPublisher::publishEvent);
         wallet.clearDomainEvents();
 
@@ -36,13 +35,13 @@ public class WalletRepositoryImpl implements WalletRepository {
 
     @Override
     public Optional<Wallet> findByDriverId(UUID driverId) {
-        return jpaRepository.findByDriverId(driverId)
+        return jpaRepository.findByDriverId(driverId.toString())
                 .map(WalletPersistenceAssembler::toDomain);
     }
 
     @Override
     public Optional<Wallet> findByWalletId(UUID walletId) {
-        return jpaRepository.findByWalletId(walletId)
+        return jpaRepository.findByWalletId(walletId.toString())
                 .map(WalletPersistenceAssembler::toDomain);
     }
 }

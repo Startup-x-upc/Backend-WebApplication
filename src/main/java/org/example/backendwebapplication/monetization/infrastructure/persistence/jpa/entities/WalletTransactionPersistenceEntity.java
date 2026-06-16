@@ -6,18 +6,17 @@ import org.example.backendwebapplication.shared.infrastructure.persistence.jpa.e
 import org.example.backendwebapplication.monetization.domain.model.valueobjects.TransactionType;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Getter
 @Entity
 @Table(name = "wallet_transactions")
 public class WalletTransactionPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
-    @Column(nullable = false)
-    private UUID walletId;
+    @Column(name = "wallet_id", nullable = false, length = 36)
+    private String walletId;
 
-    @Column
-    private UUID tripId;
+    @Column(name = "trip_id", length = 36)
+    private String tripId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -31,8 +30,8 @@ public class WalletTransactionPersistenceEntity extends AuditableAbstractPersist
 
     public WalletTransactionPersistenceEntity() {}
 
-    public void setWalletId(UUID walletId) { this.walletId = walletId; }
-    public void setTripId(UUID tripId) { this.tripId = tripId; }
+    public void setWalletId(String walletId) { this.walletId = walletId; }
+    public void setTripId(String tripId) { this.tripId = tripId; }
     public void setType(TransactionType type) { this.type = type; }
     public void setAmount(BigDecimal amount) { this.amount = amount; }
     public void setResultingBalance(BigDecimal resultingBalance) { this.resultingBalance = resultingBalance; }

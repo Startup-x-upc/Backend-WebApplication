@@ -6,15 +6,14 @@ import org.example.backendwebapplication.shared.infrastructure.persistence.jpa.e
 import org.example.backendwebapplication.monetization.domain.model.valueobjects.WalletStatus;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Getter
 @Entity
 @Table(name = "wallets")
 public class WalletPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
-    @Column(nullable = false)
-    private UUID driverId;
+    @Column(name = "driver_id", nullable = false, length = 36)
+    private String driverId;
 
     @Column(nullable = false)
     private BigDecimal balance;
@@ -23,13 +22,13 @@ public class WalletPersistenceEntity extends AuditableAbstractPersistenceEntity 
     @Enumerated(EnumType.STRING)
     private WalletStatus status;
 
-    @Column(nullable = false, unique = true)
-    private UUID walletId;
+    @Column(name = "wallet_id", nullable = false, unique = true, length = 36)
+    private String walletId;
 
     public WalletPersistenceEntity() {}
 
-    public void setDriverId(UUID driverId) { this.driverId = driverId; }
+    public void setDriverId(String driverId) { this.driverId = driverId; }
     public void setBalance(BigDecimal balance) { this.balance = balance; }
     public void setStatus(WalletStatus status) { this.status = status; }
-    public void setWalletId(UUID walletId) { this.walletId = walletId; }
+    public void setWalletId(String walletId) { this.walletId = walletId; }
 }

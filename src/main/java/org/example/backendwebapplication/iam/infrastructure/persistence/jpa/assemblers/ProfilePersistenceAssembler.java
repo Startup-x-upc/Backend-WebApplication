@@ -5,6 +5,7 @@ import org.example.backendwebapplication.iam.domain.model.valueobjects.FullName;
 import org.example.backendwebapplication.iam.infrastructure.persistence.jpa.entities.ProfilePersistenceEntity;
 
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * Stateless assembler that translates between the {@link Profile} domain
@@ -16,8 +17,8 @@ public final class ProfilePersistenceAssembler {
 
     public static Profile toDomain(ProfilePersistenceEntity entity) {
         return new Profile(
-                entity.getProfileId(),
-                entity.getUserId(),
+                UUID.fromString(entity.getProfileId()),
+                UUID.fromString(entity.getUserId()),
                 new FullName(entity.getFullName()),
                 entity.getPhotoUrl(),
                 toInstant(entity.getCreatedAt()),
@@ -26,8 +27,8 @@ public final class ProfilePersistenceAssembler {
 
     public static ProfilePersistenceEntity toPersistence(Profile profile) {
         var entity = new ProfilePersistenceEntity();
-        entity.setProfileId(profile.getProfileId());
-        entity.setUserId(profile.getUserId());
+        entity.setProfileId(profile.getProfileId().toString());
+        entity.setUserId(profile.getUserId().toString());
         entity.setFullName(profile.getFullName());
         entity.setPhotoUrl(profile.getPhotoUrl());
         return entity;

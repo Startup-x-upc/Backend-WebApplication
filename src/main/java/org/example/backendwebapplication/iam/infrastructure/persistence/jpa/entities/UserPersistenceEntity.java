@@ -4,20 +4,15 @@ import org.example.backendwebapplication.iam.domain.model.valueobjects.UserRole;
 import org.example.backendwebapplication.shared.infrastructure.persistence.jpa.entities.AuditableAbstractPersistenceEntity;
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 /**
  * JPA persistence entity for the User aggregate.
- * <p>Kept in the infrastructure layer to keep JPA concerns out of the
- * domain model. The business identity ({@code userId}) is a UUID column
- * separate from the auto-generated {@code id} primary key.</p>
  */
 @Entity
 @Table(name = "users")
 public class UserPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
-    @Column(nullable = false, unique = true, length = 36)
-    private UUID userId;
+    @Column(name = "user_id", nullable = false, unique = true, length = 36)
+    private String userId;
 
     @Column(nullable = false, unique = true, length = 255)
     private String email;
@@ -31,10 +26,8 @@ public class UserPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     public UserPersistenceEntity() {}
 
-    // ── Getters / Setters ─────────────────────────────────────────────
-
-    public UUID getUserId()                    { return userId; }
-    public void setUserId(UUID userId)         { this.userId = userId; }
+    public String getUserId()                    { return userId; }
+    public void setUserId(String userId)         { this.userId = userId; }
     public String getEmail()                   { return email; }
     public void setEmail(String email)         { this.email = email; }
     public String getPasswordHash()            { return passwordHash; }

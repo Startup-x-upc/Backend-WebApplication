@@ -139,7 +139,7 @@ public class JwtService {
             throw new JwtException("Refresh token is revoked or expired");
         }
 
-        var user = userRepository.findById(stored.getUserId())
+        var user = userRepository.findById(UUID.fromString(stored.getUserId()))
                 .orElseThrow(() -> new JwtException("User associated with refresh token no longer exists"));
 
         // Rotate: revoke the old token
@@ -158,7 +158,7 @@ public class JwtService {
      */
     @Transactional
     public void revokeAllRefreshTokens(UUID userId) {
-        refreshTokenRepository.deleteByUserId(userId);
+        refreshTokenRepository.deleteByUserId(userId.toString());
     }
 
     // ── Token Pair ──────────────────────────────────────────────────────

@@ -14,10 +14,6 @@ import java.util.UUID;
 /**
  * Adapter that implements the domain {@link UserRepository} port
  * using Spring Data JPA.
- * <p>Explicitly publishes domain events registered on the {@link User}
- * aggregate after persistence, since the JPA repository operates on
- * {@code UserPersistenceEntity} (not the aggregate itself) and Spring Data's
- * {@code @DomainEvents} mechanism would never fire otherwise.</p>
  */
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -33,7 +29,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(UUID userId) {
-        return jpa.findByUserId(userId)
+        return jpa.findByUserId(userId.toString())
                 .map(UserPersistenceAssembler::toDomain);
     }
 
@@ -48,9 +44,6 @@ public class UserRepositoryImpl implements UserRepository {
         var entity = UserPersistenceAssembler.toPersistence(user);
         var saved = jpa.save(entity);
 
-        // Publish domain events registered on the aggregate.
-        // Must be done explicitly because jpa.save() operates on the
-        // persistence entity, not the domain aggregate root.
         user.domainEvents().forEach(eventPublisher::publishEvent);
         user.clearDomainEvents();
 

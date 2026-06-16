@@ -6,6 +6,7 @@ import org.example.backendwebapplication.iam.domain.model.valueobjects.PasswordH
 import org.example.backendwebapplication.iam.infrastructure.persistence.jpa.entities.UserPersistenceEntity;
 
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * Stateless assembler that translates between the {@link User} domain
@@ -17,7 +18,7 @@ public final class UserPersistenceAssembler {
 
     public static User toDomain(UserPersistenceEntity entity) {
         return new User(
-                entity.getUserId(),
+                UUID.fromString(entity.getUserId()),
                 new Email(entity.getEmail()),
                 PasswordHash.fromHash(entity.getPasswordHash()),
                 entity.getRole(),
@@ -27,7 +28,7 @@ public final class UserPersistenceAssembler {
 
     public static UserPersistenceEntity toPersistence(User user) {
         var entity = new UserPersistenceEntity();
-        entity.setUserId(user.getUserId());
+        entity.setUserId(user.getUserId().toString());
         entity.setEmail(user.getEmail());
         entity.setPasswordHash(user.getPasswordHash());
         entity.setRole(user.getRole());
