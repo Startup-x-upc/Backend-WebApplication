@@ -1,12 +1,14 @@
 package org.example.backendwebapplication.iam.domain.model.aggregates;
 
 import org.example.backendwebapplication.iam.domain.model.events.DriverRegisteredEvent;
+import org.example.backendwebapplication.iam.domain.model.events.ProfileUpdatedEvent;
 import org.example.backendwebapplication.iam.domain.model.events.UserRegisteredEvent;
 import org.example.backendwebapplication.iam.domain.model.valueobjects.Email;
 import org.example.backendwebapplication.iam.domain.model.valueobjects.PasswordHash;
 import org.example.backendwebapplication.iam.domain.model.valueobjects.UserRole;
 import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -17,7 +19,7 @@ import java.util.UUID;
  *
  * <p>Uses a double-identifier pattern: {@code userId} is the business
  * identity (UUID), while the persistence layer uses its own {@code Long id}
- * from {@link AuditableAbstractPersistenceEntity}.</p>
+ * from {@code AuditableAbstractPersistenceEntity}.</p>
  */
 public class User extends AbstractDomainAggregateRoot<User> {
 
@@ -25,6 +27,8 @@ public class User extends AbstractDomainAggregateRoot<User> {
     private Email email;
     private PasswordHash passwordHash;
     private UserRole role;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     /** JPA-friendly constructor. */
     User() {
@@ -32,74 +36,64 @@ public class User extends AbstractDomainAggregateRoot<User> {
 
     /**
      * Creates a new User from registration data.
-     *
-     * @param email        the user's email address
-     * @param passwordHash the already-hashed password
-     * @param role         the assigned role
      */
     public User(Email email, PasswordHash passwordHash, UserRole role) {
         this.userId = UUID.randomUUID();
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.createdAt = Instant.now();
+        this.updatedAt = this.createdAt;
     }
 
     /**
      * Full reconstruction constructor (used by persistence assembler).
      */
-    public User(UUID userId, Email email, PasswordHash passwordHash, UserRole role) {
+    public User(UUID userId, Email email, PasswordHash passwordHash, UserRole role,
+                Instant createdAt, Instant updatedAt) {
         this.userId = userId;
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     // ── Getters ──────────────────────────────────────────────────────────
 
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public String getEmail() {
-        return email.address();
-    }
-
-    public String getPasswordHash() {
-        return passwordHash.hash();
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
+    public UUID getUserId()            { return userId; }
+    public String getEmail()           { return email.address(); }
+    public String getPasswordHash()    { return passwordHash.hash(); }
+    public UserRole getRole()          { return role; }
+    public Instant getCreatedAt()      { return createdAt; }
+    public Instant getUpdatedAt()      { return updatedAt; }
 
     // ── Domain behaviour ─────────────────────────────────────────────────
 
-    /**
-     * Verifies whether the given plain-text password matches this user's hash.
-     */
     public boolean passwordMatches(String plainText) {
         return passwordHash.matches(plainText);
     }
 
-    /**
-     * Signals that this user has just been registered (passenger flow).
-     * Registers a {@link UserRegisteredEvent}.
-     */
     public void onPassengerRegistered(String fullName) {
         registerDomainEvent(new UserRegisteredEvent(
                 userId, email.address(), role.name(), fullName));
     }
 
-    /**
-     * Signals that this user has just been registered as a driver.
-     * Registers a {@link DriverRegisteredEvent} so Driver Management and
-     * Monetization can create their own entities.
-     */
     public void onDriverRegistered(String fullName, String vehicleType,
                                    String licenseNumber, String soatNumber) {
         registerDomainEvent(new DriverRegisteredEvent(
                 userId, email.address(), fullName,
                 vehicleType, licenseNumber, soatNumber));
+    }
+
+    /**
+     * Signals that the profile belonging to this user has been updated.
+     * Registers a {@link ProfileUpdatedEvent} so other bounded contexts
+     * (e.g. Driver Management) can sync the display data.
+     */
+    public void onProfileUpdated(UUID profileId, String fullName, String photoUrl) {
+        registerDomainEvent(new ProfileUpdatedEvent(
+                userId, profileId, fullName, photoUrl));
     }
 
     // ── Object contracts ─────────────────────────────────────────────────

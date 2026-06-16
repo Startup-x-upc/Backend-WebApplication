@@ -5,12 +5,14 @@ import java.util.UUID;
 /**
  * Command to update a user's profile information.
  *
- * @param userId   the ID of the user whose profile should be updated
- * @param fullName the new full name
- * @param photoUrl the new photo URL (optional)
+ * @param profileId       the profile UUID (from URL path)
+ * @param requesterUserId the UUID of the authenticated user making the request
+ * @param fullName        the new full name
+ * @param photoUrl        the new photo URL (optional)
  */
 public record UpdateProfileCommand(
-        UUID userId,
+        UUID profileId,
+        UUID requesterUserId,
         String fullName,
         String photoUrl) {
 }

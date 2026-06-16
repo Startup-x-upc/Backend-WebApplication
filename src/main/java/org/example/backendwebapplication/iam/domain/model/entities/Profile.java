@@ -2,6 +2,7 @@ package org.example.backendwebapplication.iam.domain.model.entities;
 
 import org.example.backendwebapplication.iam.domain.model.valueobjects.FullName;
 
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -20,6 +21,8 @@ public class Profile {
     private UUID userId;
     private FullName fullName;
     private String photoUrl;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     /** JPA-friendly constructor. */
     Profile() {
@@ -33,44 +36,41 @@ public class Profile {
         this.userId = userId;
         this.fullName = fullName;
         this.photoUrl = (photoUrl != null) ? photoUrl : "";
+        this.createdAt = Instant.now();
+        this.updatedAt = this.createdAt;
     }
 
     /**
      * Full reconstruction constructor (used by persistence assembler).
      */
-    public Profile(UUID profileId, UUID userId, FullName fullName, String photoUrl) {
+    public Profile(UUID profileId, UUID userId, FullName fullName, String photoUrl,
+                   Instant createdAt, Instant updatedAt) {
         this.profileId = profileId;
         this.userId = userId;
         this.fullName = fullName;
         this.photoUrl = (photoUrl != null) ? photoUrl : "";
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     // ── Getters ──────────────────────────────────────────────────────────
 
-    public UUID getProfileId() {
-        return profileId;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public String getFullName() {
-        return fullName.value();
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
+    public UUID getProfileId()     { return profileId; }
+    public UUID getUserId()        { return userId; }
+    public String getFullName()    { return fullName.value(); }
+    public String getPhotoUrl()    { return photoUrl; }
+    public Instant getCreatedAt()  { return createdAt; }
+    public Instant getUpdatedAt()  { return updatedAt; }
 
     // ── Domain behaviour ─────────────────────────────────────────────────
 
     /**
-     * Updates mutable profile fields.
+     * Updates mutable profile fields and bumps the timestamp.
      */
     public void update(FullName newFullName, String newPhotoUrl) {
         this.fullName = newFullName;
         this.photoUrl = (newPhotoUrl != null) ? newPhotoUrl : "";
+        this.updatedAt = Instant.now();
     }
 
     // ── Object contracts ─────────────────────────────────────────────────

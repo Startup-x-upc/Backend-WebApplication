@@ -5,6 +5,8 @@ import org.example.backendwebapplication.iam.domain.model.valueobjects.Email;
 import org.example.backendwebapplication.iam.domain.model.valueobjects.PasswordHash;
 import org.example.backendwebapplication.iam.infrastructure.persistence.jpa.entities.UserPersistenceEntity;
 
+import java.time.Instant;
+
 /**
  * Stateless assembler that translates between the {@link User} domain
  * aggregate and its {@link UserPersistenceEntity} JPA representation.
@@ -13,20 +15,16 @@ public final class UserPersistenceAssembler {
 
     private UserPersistenceAssembler() {}
 
-    /**
-     * Converts a JPA entity to a domain aggregate.
-     */
     public static User toDomain(UserPersistenceEntity entity) {
         return new User(
                 entity.getUserId(),
                 new Email(entity.getEmail()),
                 PasswordHash.fromHash(entity.getPasswordHash()),
-                entity.getRole());
+                entity.getRole(),
+                toInstant(entity.getCreatedAt()),
+                toInstant(entity.getUpdatedAt()));
     }
 
-    /**
-     * Converts a domain aggregate to a JPA entity.
-     */
     public static UserPersistenceEntity toPersistence(User user) {
         var entity = new UserPersistenceEntity();
         entity.setUserId(user.getUserId());
@@ -34,5 +32,9 @@ public final class UserPersistenceAssembler {
         entity.setPasswordHash(user.getPasswordHash());
         entity.setRole(user.getRole());
         return entity;
+    }
+
+    private static Instant toInstant(java.util.Date date) {
+        return date != null ? date.toInstant() : null;
     }
 }
