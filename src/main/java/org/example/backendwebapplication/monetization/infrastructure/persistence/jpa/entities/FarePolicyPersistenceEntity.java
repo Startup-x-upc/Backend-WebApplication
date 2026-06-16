@@ -20,7 +20,12 @@ public class FarePolicyPersistenceEntity extends AuditableAbstractPersistenceEnt
     @Column(nullable = false)
     private BigDecimal minimumFare;
 
+    @Column(nullable = false)
+    private BigDecimal commissionRate;
+
     public FarePolicyPersistenceEntity() {}
+
+    public void setCommissionRate(BigDecimal commissionRate) { this.commissionRate = commissionRate; }
 
     public void setBaseFare(BigDecimal baseFare) { this.baseFare = baseFare; }
     public void setPricePerKm(BigDecimal pricePerKm) { this.pricePerKm = pricePerKm; }
