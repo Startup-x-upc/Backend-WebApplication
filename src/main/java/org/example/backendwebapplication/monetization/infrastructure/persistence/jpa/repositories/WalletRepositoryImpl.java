@@ -4,6 +4,7 @@ import org.example.backendwebapplication.monetization.domain.model.aggregates.Wa
 import org.example.backendwebapplication.monetization.domain.repositories.WalletRepository;
 import org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.assemblers.WalletPersistenceAssembler;
 import org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.entities.WalletPersistenceEntity;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,15 +14,23 @@ import java.util.UUID;
 public class WalletRepositoryImpl implements WalletRepository {
 
     private final WalletJpaRepository jpaRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public WalletRepositoryImpl(WalletJpaRepository jpaRepository) {
+    public WalletRepositoryImpl(WalletJpaRepository jpaRepository,
+                                ApplicationEventPublisher eventPublisher) {
         this.jpaRepository = jpaRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
     public Wallet save(Wallet wallet) {
         WalletPersistenceEntity entity = WalletPersistenceAssembler.toEntity(wallet);
         WalletPersistenceEntity saved = jpaRepository.save(entity);
+
+        // Publish domain events registered on the aggregate
+        wallet.domainEvents().forEach(eventPublisher::publishEvent);
+        wallet.clearDomainEvents();
+
         return WalletPersistenceAssembler.toDomain(saved);
     }
 
