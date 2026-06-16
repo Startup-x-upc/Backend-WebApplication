@@ -30,4 +30,10 @@ public class WalletRepositoryImpl implements WalletRepository {
         return jpaRepository.findByDriverId(driverId)
                 .map(WalletPersistenceAssembler::toDomain);
     }
+
+    @Override
+    public Optional<Wallet> findByWalletId(UUID walletId) {
+        return jpaRepository.findByWalletId(walletId)
+                .map(WalletPersistenceAssembler::toDomain);
+    }
 }
