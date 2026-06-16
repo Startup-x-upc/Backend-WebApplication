@@ -27,7 +27,7 @@ public class MonetizationCommandServiceImpl {
 
     public FarePolicy handle(ConfigureFarePolicyCommand command) {
         FarePolicy policy = farePolicyRepository.getCurrent().orElse(new FarePolicy());
-        policy.configure(command.baseFare(), command.pricePerKm(), command.minimumFare());
+        policy.configure(command.baseFare(), command.pricePerKm(), command.minimumFare(), command.commissionRate());
         return farePolicyRepository.save(policy);
     }
 
