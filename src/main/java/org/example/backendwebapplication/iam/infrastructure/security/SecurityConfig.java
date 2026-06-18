@@ -44,10 +44,10 @@ public class SecurityConfig {
             // Route authorisation
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
-                .requestMatchers(HttpMethod.POST, "/auth/register/passenger").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/register/driver").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/register/passenger").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/register/driver").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh").permitAll()
 
                 // Swagger / OpenAPI
                 .requestMatchers(

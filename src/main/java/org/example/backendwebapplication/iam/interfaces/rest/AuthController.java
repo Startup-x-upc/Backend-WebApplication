@@ -33,6 +33,7 @@ import java.util.UUID;
  * REST controller for authentication endpoints.
  */
 @RestController
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "Registration, login, and token management")
 public class AuthController {

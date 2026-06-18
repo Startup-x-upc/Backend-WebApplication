@@ -25,6 +25,7 @@ import java.util.UUID;
  * REST controller for profile endpoints.
  */
 @RestController
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Tag(name = "Profiles", description = "User profile queries and updates")
 public class ProfilesController {
