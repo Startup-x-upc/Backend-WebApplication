@@ -1,0 +1,53 @@
+package org.example.backendwebapplication.iam.infrastructure.persistence.jpa.adapters;
+
+import org.example.backendwebapplication.iam.domain.model.entities.Profile;
+import org.example.backendwebapplication.iam.domain.repositories.ProfileRepository;
+import org.example.backendwebapplication.iam.infrastructure.persistence.jpa.assemblers.ProfilePersistenceAssembler;
+import org.example.backendwebapplication.iam.infrastructure.persistence.jpa.repositories.ProfilePersistenceRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Adapter that implements the domain {@link ProfileRepository} port
+ * using Spring Data JPA.
+ */
+@Repository
+public class ProfileRepositoryImpl implements ProfileRepository {
+
+    private final ProfilePersistenceRepository jpa;
+
+    public ProfileRepositoryImpl(ProfilePersistenceRepository jpa) {
+        this.jpa = jpa;
+    }
+
+    @Override
+    public Optional<Profile> findById(UUID profileId) {
+        return jpa.findByProfileId(profileId.toString())
+                .map(ProfilePersistenceAssembler::toDomain);
+    }
+
+    @Override
+    public Optional<Profile> findByUserId(UUID userId) {
+        return jpa.findByUserId(userId.toString())
+                .map(ProfilePersistenceAssembler::toDomain);
+    }
+
+    @Override
+    public Profile save(Profile profile) {
+        // Look up the existing entity to preserve the internal Long id
+        // so JPA issues an UPDATE instead of an INSERT
+        var existing = jpa.findByProfileId(profile.getProfileId().toString())
+                .orElse(null);
+
+        var entity = ProfilePersistenceAssembler.toPersistence(profile);
+
+        if (existing != null) {
+            entity.setId(existing.getId());
+        }
+
+        var saved = jpa.save(entity);
+        return ProfilePersistenceAssembler.toDomain(saved);
+    }
+}
