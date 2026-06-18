@@ -11,10 +11,12 @@ import org.example.backendwebapplication.monetization.interfaces.rest.resources.
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/monetization")
+@Tag(name = "Monetization", description = "Monetization Bounded Context Endpoints")
 public class MonetizationController {
 
     private final MonetizationCommandServiceImpl commandService;
