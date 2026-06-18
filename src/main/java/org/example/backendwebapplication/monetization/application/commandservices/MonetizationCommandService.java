@@ -12,6 +12,4 @@ public interface MonetizationCommandService {
     WalletRechargeResult handle(TopUpWalletCommand command);
     WalletTransaction handle(RegisterTopUpFailureCommand command);
     WalletTransaction handle(ApplyRideCommissionCommand command);
-    Wallet handle(BlockDriverWalletCommand command);
-    Wallet handle(UnblockDriverWalletCommand command);
 }

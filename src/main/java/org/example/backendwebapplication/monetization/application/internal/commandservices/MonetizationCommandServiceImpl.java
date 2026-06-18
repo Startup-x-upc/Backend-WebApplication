@@ -84,26 +84,11 @@ public class MonetizationCommandServiceImpl implements MonetizationCommandServic
         FarePolicy policy = farePolicyRepository.getCurrent()
                 .orElseThrow(() -> new RuntimeException("No fare policy configured"));
         BigDecimal commission = policy.calculateCommission(command.rideFare());
-        BigDecimal newBalance = wallet.getBalance().subtract(commission).max(BigDecimal.ZERO).setScale(2, RoundingMode.HALF_UP);
-        wallet.setBalance(newBalance);
+        wallet.applyCommission(commission);
         Wallet saved = walletRepository.save(wallet);
         WalletTransaction tx = new WalletTransaction(
                 saved.getWalletId(), command.tripId(),
-                TransactionType.COMMISSION, commission.negate(), newBalance);
+                TransactionType.COMMISSION, commission.negate(), saved.getBalance());
         return walletTransactionRepository.save(tx);
-    }
-
-    public Wallet handle(BlockDriverWalletCommand command) {
-        Wallet wallet = walletRepository.findByDriverId(command.driverId())
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
-        wallet.block();
-        return walletRepository.save(wallet);
-    }
-
-    public Wallet handle(UnblockDriverWalletCommand command) {
-        Wallet wallet = walletRepository.findByDriverId(command.driverId())
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
-        wallet.unblock();
-        return walletRepository.save(wallet);
     }
 }

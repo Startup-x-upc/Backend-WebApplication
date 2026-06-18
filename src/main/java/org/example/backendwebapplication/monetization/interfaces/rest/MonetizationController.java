@@ -84,18 +84,6 @@ public class MonetizationController {
         return ResponseEntity.ok(WalletTransactionResourceAssembler.toResource(result));
     }
 
-    @PostMapping("/wallets/{driverId}/block")
-    public ResponseEntity<WalletResponse> blockWallet(@PathVariable UUID driverId) {
-        var result = commandService.handle(new BlockDriverWalletCommand(driverId));
-        return ResponseEntity.ok(WalletResourceAssembler.toResource(result));
-    }
-
-    @PostMapping("/wallets/{driverId}/unblock")
-    public ResponseEntity<WalletResponse> unblockWallet(@PathVariable UUID driverId) {
-        var result = commandService.handle(new UnblockDriverWalletCommand(driverId));
-        return ResponseEntity.ok(WalletResourceAssembler.toResource(result));
-    }
-
     @GetMapping("/wallets/{walletId}/transactions")
     public ResponseEntity<?> getTransactionHistory(@PathVariable UUID walletId,
                                                    @RequestParam(defaultValue = "0") int page,

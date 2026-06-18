@@ -26,7 +26,10 @@ public class Wallet extends AbstractDomainAggregateRoot<Wallet> {
     }
 
     public void applyCommission(BigDecimal amount) {
-        this.balance = this.balance.subtract(amount);
+        this.balance = this.balance.subtract(amount).max(BigDecimal.ZERO).setScale(2, java.math.RoundingMode.HALF_UP);
+        if (this.balance.compareTo(BigDecimal.ZERO) == 0) {
+            registerDomainEvent(new org.example.backendwebapplication.monetization.domain.model.events.WalletEmptyEvent(this.walletId, this.driverId));
+        }
     }
 
     public void block() {
