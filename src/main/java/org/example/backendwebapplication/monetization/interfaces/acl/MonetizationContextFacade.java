@@ -17,4 +17,11 @@ public interface MonetizationContextFacade {
      * @return {@code true} if the driver's wallet exists and has a balance > 0
      */
     boolean hasDriverPositiveWalletBalance(UUID driverId);
+
+    /**
+     * Gets the minimum fare from the currently configured fare policy.
+     *
+     * @return the minimum fare amount
+     */
+    java.math.BigDecimal getMinimumFare();
 }
