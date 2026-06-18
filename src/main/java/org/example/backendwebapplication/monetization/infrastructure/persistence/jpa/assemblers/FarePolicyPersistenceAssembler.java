@@ -17,7 +17,7 @@ public class FarePolicyPersistenceAssembler {
 
     public static FarePolicy toDomain(FarePolicyPersistenceEntity entity) {
         FarePolicy domain = new FarePolicy();
-        domain.setFarePolicyId(java.util.UUID.fromString(entity.getFarePolicyId()));
+        domain.setFarePolicyId(entity.getFarePolicyId() != null ? java.util.UUID.fromString(entity.getFarePolicyId()) : java.util.UUID.randomUUID());
         domain.setBaseFare(entity.getBaseFare());
         domain.setPricePerKm(entity.getPricePerKm());
         domain.setMinimumFare(entity.getMinimumFare());

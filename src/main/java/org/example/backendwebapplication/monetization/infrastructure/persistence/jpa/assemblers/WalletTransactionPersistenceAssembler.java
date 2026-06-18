@@ -20,7 +20,7 @@ public class WalletTransactionPersistenceAssembler {
 
     public static WalletTransaction toDomain(WalletTransactionPersistenceEntity entity) {
         WalletTransaction domain = new WalletTransaction();
-        domain.setTransactionId(UUID.fromString(entity.getTransactionId()));
+        domain.setTransactionId(entity.getTransactionId() != null ? UUID.fromString(entity.getTransactionId()) : UUID.randomUUID());
         domain.setWalletId(UUID.fromString(entity.getWalletId()));
         domain.setTripId(entity.getTripId() != null ? UUID.fromString(entity.getTripId()) : null);
         domain.setType(entity.getType());
