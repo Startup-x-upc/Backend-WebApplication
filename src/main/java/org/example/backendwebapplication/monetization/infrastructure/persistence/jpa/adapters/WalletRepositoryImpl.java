@@ -25,7 +25,12 @@ public class WalletRepositoryImpl implements WalletRepository {
 
     @Override
     public Wallet save(Wallet wallet) {
+        var existing = jpaRepository.findByWalletId(wallet.getWalletId().toString())
+                .orElse(null);
         WalletPersistenceEntity entity = WalletPersistenceAssembler.toEntity(wallet);
+        if (existing != null) {
+            entity.setId(existing.getId());
+        }
         WalletPersistenceEntity saved = jpaRepository.save(entity);
 
         wallet.domainEvents().forEach(eventPublisher::publishEvent);

@@ -20,7 +20,12 @@ public class FarePolicyRepositoryImpl implements FarePolicyRepository {
 
     @Override
     public FarePolicy save(FarePolicy farePolicy) {
+        var existing = jpaRepository.findByFarePolicyId(farePolicy.getFarePolicyId().toString())
+                .orElse(null);
         FarePolicyPersistenceEntity entity = FarePolicyPersistenceAssembler.toEntity(farePolicy);
+        if (existing != null) {
+            entity.setId(existing.getId());
+        }
         FarePolicyPersistenceEntity saved = jpaRepository.save(entity);
         return FarePolicyPersistenceAssembler.toDomain(saved);
     }
