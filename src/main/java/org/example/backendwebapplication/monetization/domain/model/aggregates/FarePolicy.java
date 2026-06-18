@@ -13,6 +13,7 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
     private BigDecimal pricePerKm;
     private BigDecimal minimumFare;
     private BigDecimal commissionRate;
+    private java.time.Instant updatedAt;
 
     public FarePolicy() {}
 
@@ -45,10 +46,12 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
     public BigDecimal getPricePerKm() { return pricePerKm; }
     public BigDecimal getMinimumFare() { return minimumFare; }
     public BigDecimal getCommissionRate() { return commissionRate; }
+    public java.time.Instant getUpdatedAt() { return updatedAt; }
 
     public void setFarePolicyId(UUID farePolicyId) { this.farePolicyId = farePolicyId; }
     public void setBaseFare(BigDecimal baseFare) { this.baseFare = baseFare; }
     public void setPricePerKm(BigDecimal pricePerKm) { this.pricePerKm = pricePerKm; }
     public void setMinimumFare(BigDecimal minimumFare) { this.minimumFare = minimumFare; }
     public void setCommissionRate(BigDecimal commissionRate) { this.commissionRate = commissionRate; }
+    public void setUpdatedAt(java.time.Instant updatedAt) { this.updatedAt = updatedAt; }
 }

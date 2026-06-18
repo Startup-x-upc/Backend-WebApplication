@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 @Table(name = "fare_policies")
 public class FarePolicyPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
+    @Column(name = "fare_policy_id", nullable = false, unique = true, length = 36)
+    private String farePolicyId;
+
     @Column(nullable = false)
     private BigDecimal baseFare;
 
@@ -30,4 +33,5 @@ public class FarePolicyPersistenceEntity extends AuditableAbstractPersistenceEnt
     public void setBaseFare(BigDecimal baseFare) { this.baseFare = baseFare; }
     public void setPricePerKm(BigDecimal pricePerKm) { this.pricePerKm = pricePerKm; }
     public void setMinimumFare(BigDecimal minimumFare) { this.minimumFare = minimumFare; }
+    public void setFarePolicyId(String farePolicyId) { this.farePolicyId = farePolicyId; }
 }

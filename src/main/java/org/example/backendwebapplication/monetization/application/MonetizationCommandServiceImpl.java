@@ -36,7 +36,7 @@ public class MonetizationCommandServiceImpl {
     }
 
     @Transactional
-    public Wallet handle(TopUpWalletCommand command) {
+    public WalletRechargeResult handle(TopUpWalletCommand command) {
         Wallet wallet = walletRepository.findByWalletId(command.walletId())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         BigDecimal newBalance = wallet.getBalance().add(command.amount()).setScale(2, RoundingMode.HALF_UP);
@@ -45,8 +45,8 @@ public class MonetizationCommandServiceImpl {
         WalletTransaction tx = new WalletTransaction(
                 saved.getWalletId(), null,
                 TransactionType.TOP_UP, command.amount(), newBalance);
-        walletTransactionRepository.save(tx);
-        return saved;
+        WalletTransaction savedTx = walletTransactionRepository.save(tx);
+        return new WalletRechargeResult(saved, savedTx);
     }
 
     @Transactional

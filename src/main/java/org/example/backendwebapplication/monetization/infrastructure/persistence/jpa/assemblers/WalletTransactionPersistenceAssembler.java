@@ -9,6 +9,7 @@ public class WalletTransactionPersistenceAssembler {
 
     public static WalletTransactionPersistenceEntity toEntity(WalletTransaction domain) {
         WalletTransactionPersistenceEntity entity = new WalletTransactionPersistenceEntity();
+        entity.setTransactionId(domain.getTransactionId().toString());
         entity.setWalletId(domain.getWalletId().toString());
         entity.setTripId(domain.getTripId() != null ? domain.getTripId().toString() : null);
         entity.setType(domain.getType());
@@ -19,11 +20,13 @@ public class WalletTransactionPersistenceAssembler {
 
     public static WalletTransaction toDomain(WalletTransactionPersistenceEntity entity) {
         WalletTransaction domain = new WalletTransaction();
+        domain.setTransactionId(UUID.fromString(entity.getTransactionId()));
         domain.setWalletId(UUID.fromString(entity.getWalletId()));
         domain.setTripId(entity.getTripId() != null ? UUID.fromString(entity.getTripId()) : null);
         domain.setType(entity.getType());
         domain.setAmount(entity.getAmount());
         domain.setResultingBalance(entity.getResultingBalance());
+        domain.setTimestamp(entity.getCreatedAt() != null ? entity.getCreatedAt().toInstant() : java.time.Instant.now());
         return domain;
     }
 }

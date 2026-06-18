@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 @Table(name = "wallet_transactions")
 public class WalletTransactionPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
+    @Column(name = "transaction_id", nullable = false, unique = true, length = 36)
+    private String transactionId;
+
     @Column(name = "wallet_id", nullable = false, length = 36)
     private String walletId;
 
@@ -35,4 +38,5 @@ public class WalletTransactionPersistenceEntity extends AuditableAbstractPersist
     public void setType(TransactionType type) { this.type = type; }
     public void setAmount(BigDecimal amount) { this.amount = amount; }
     public void setResultingBalance(BigDecimal resultingBalance) { this.resultingBalance = resultingBalance; }
+    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
 }
