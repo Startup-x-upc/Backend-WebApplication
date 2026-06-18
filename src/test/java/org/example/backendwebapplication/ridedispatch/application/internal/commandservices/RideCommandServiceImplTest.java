@@ -161,7 +161,7 @@ class RideCommandServiceImplTest {
 
         Result<Ride, ApplicationError> result = rideCommandService.handle(command);
 
-        assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess(), () -> "Expected success, but failed with: " + result.failure().get().code() + " - " + result.failure().get().message());
         Ride ride = result.success().get();
         assertEquals(requestId, ride.getRequestId());
         assertEquals(driverId, ride.getDriverId());

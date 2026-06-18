@@ -4,6 +4,6 @@ import java.util.UUID;
 
 public record SelectCandidateCommand(
         UUID requestId,
-        UUID candidateId,
-        UUID passengerId
+        UUID passengerId,
+        UUID candidateId
 ) {}
