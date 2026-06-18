@@ -1,11 +1,11 @@
-package org.example.backendwebapplication.monetization.interfaces.rest.assemblers;
+package org.example.backendwebapplication.monetization.interfaces.rest.transform;
 
 import org.example.backendwebapplication.monetization.domain.model.aggregates.Wallet;
 import org.example.backendwebapplication.monetization.interfaces.rest.resources.WalletResponse;
 
-public class WalletResponseAssembler {
+public class WalletResourceAssembler {
 
-    public static WalletResponse toResponse(Wallet wallet) {
+    public static WalletResponse toResource(Wallet wallet) {
         return new WalletResponse(
                 wallet.getWalletId(),
                 wallet.getDriverId(),

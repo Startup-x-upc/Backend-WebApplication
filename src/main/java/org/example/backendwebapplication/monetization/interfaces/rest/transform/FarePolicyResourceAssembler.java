@@ -1,4 +1,4 @@
-package org.example.backendwebapplication.monetization.interfaces.rest.assemblers;
+package org.example.backendwebapplication.monetization.interfaces.rest.transform;
 
 import org.example.backendwebapplication.monetization.domain.model.aggregates.FarePolicy;
 import org.example.backendwebapplication.monetization.interfaces.rest.resources.FarePolicyResponse;
@@ -6,9 +6,9 @@ import org.example.backendwebapplication.monetization.interfaces.rest.resources.
 
 import java.math.BigDecimal;
 
-public class FarePolicyResponseAssembler {
+public class FarePolicyResourceAssembler {
 
-    public static FarePolicyResponse toResponse(FarePolicy farePolicy) {
+    public static FarePolicyResponse toResource(FarePolicy farePolicy) {
         return new FarePolicyResponse(
                 farePolicy.getFarePolicyId(),
                 farePolicy.getBaseFare(),
@@ -19,7 +19,7 @@ public class FarePolicyResponseAssembler {
         );
     }
 
-    public static FareQuoteResponse toQuoteResponse(BigDecimal estimatedFare) {
+    public static FareQuoteResponse toResource(BigDecimal estimatedFare) {
         return new FareQuoteResponse(estimatedFare);
     }
 }

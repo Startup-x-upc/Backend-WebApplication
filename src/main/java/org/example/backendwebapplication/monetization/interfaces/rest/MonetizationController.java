@@ -4,9 +4,9 @@ import org.example.backendwebapplication.monetization.application.MonetizationCo
 import org.example.backendwebapplication.monetization.application.MonetizationQueryServiceImpl;
 import org.example.backendwebapplication.monetization.domain.model.commands.*;
 import org.example.backendwebapplication.monetization.domain.model.queries.*;
-import org.example.backendwebapplication.monetization.interfaces.rest.assemblers.FarePolicyResponseAssembler;
-import org.example.backendwebapplication.monetization.interfaces.rest.assemblers.WalletResponseAssembler;
-import org.example.backendwebapplication.monetization.interfaces.rest.assemblers.WalletTransactionResponseAssembler;
+import org.example.backendwebapplication.monetization.interfaces.rest.transform.FarePolicyResourceAssembler;
+import org.example.backendwebapplication.monetization.interfaces.rest.transform.WalletResourceAssembler;
+import org.example.backendwebapplication.monetization.interfaces.rest.transform.WalletTransactionResourceAssembler;
 import org.example.backendwebapplication.monetization.interfaces.rest.resources.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +33,7 @@ public class MonetizationController {
     @GetMapping("/fare-config")
     public ResponseEntity<FarePolicyResponse> getCurrentFarePolicy() {
         var result = queryService.handle(new GetCurrentFarePolicyQuery());
-        return ResponseEntity.ok(FarePolicyResponseAssembler.toResponse(result));
+        return ResponseEntity.ok(FarePolicyResourceAssembler.toResource(result));
     }
 
     @PutMapping("/fare-config")
@@ -44,20 +44,20 @@ public class MonetizationController {
                 resource.minimumFare(),
                 resource.commissionRate());
         var result = commandService.handle(command);
-        return ResponseEntity.ok(FarePolicyResponseAssembler.toResponse(result));
+        return ResponseEntity.ok(FarePolicyResourceAssembler.toResource(result));
     }
 
     @PostMapping("/fare-config/estimate")
     public ResponseEntity<FareQuoteResponse> estimateFare(@RequestBody EstimatedFareResource resource) {
         var result = queryService.handle(new GetEstimatedFareQuery(resource.distanceKm()));
-        return ResponseEntity.ok(FarePolicyResponseAssembler.toQuoteResponse(result));
+        return ResponseEntity.ok(FarePolicyResourceAssembler.toResource(result));
     }
 
     // Wallet endpoints
     @GetMapping("/drivers/{driverId}/wallet")
     public ResponseEntity<WalletResponse> getWalletByDriverId(@PathVariable UUID driverId) {
         var result = queryService.handle(new GetWalletByDriverIdQuery(driverId));
-        return ResponseEntity.ok(WalletResponseAssembler.toResponse(result));
+        return ResponseEntity.ok(WalletResourceAssembler.toResource(result));
     }
 
     @PostMapping("/wallets/{walletId}/recharge")
@@ -65,8 +65,8 @@ public class MonetizationController {
         var command = new TopUpWalletCommand(walletId, resource.amount());
         var result = commandService.handle(command);
         return ResponseEntity.ok(new WalletRechargeResponse(
-                WalletResponseAssembler.toResponse(result.wallet()),
-                WalletTransactionResponseAssembler.toResponse(result.transaction())
+                WalletResourceAssembler.toResource(result.wallet()),
+                WalletTransactionResourceAssembler.toResource(result.transaction())
         ));
     }
 
@@ -74,26 +74,26 @@ public class MonetizationController {
     public ResponseEntity<WalletTransactionResponse> applyCommission(@PathVariable UUID walletId, @RequestBody ApplyCommissionResource resource) {
         var command = new ApplyRideCommissionCommand(walletId, resource.tripId(), resource.rideFare());
         var result = commandService.handle(command);
-        return ResponseEntity.ok(WalletTransactionResponseAssembler.toResponse(result));
+        return ResponseEntity.ok(WalletTransactionResourceAssembler.toResource(result));
     }
 
     @PostMapping("/wallets/{walletId}/top-up-failure")
     public ResponseEntity<WalletTransactionResponse> registerTopUpFailure(@PathVariable UUID walletId, @RequestBody TopUpFailureResource resource) {
         var command = new RegisterTopUpFailureCommand(walletId, resource.amount(), resource.reason());
         var result = commandService.handle(command);
-        return ResponseEntity.ok(WalletTransactionResponseAssembler.toResponse(result));
+        return ResponseEntity.ok(WalletTransactionResourceAssembler.toResource(result));
     }
 
     @PostMapping("/wallets/{driverId}/block")
     public ResponseEntity<WalletResponse> blockWallet(@PathVariable UUID driverId) {
         var result = commandService.handle(new BlockDriverWalletCommand(driverId));
-        return ResponseEntity.ok(WalletResponseAssembler.toResponse(result));
+        return ResponseEntity.ok(WalletResourceAssembler.toResource(result));
     }
 
     @PostMapping("/wallets/{driverId}/unblock")
     public ResponseEntity<WalletResponse> unblockWallet(@PathVariable UUID driverId) {
         var result = commandService.handle(new UnblockDriverWalletCommand(driverId));
-        return ResponseEntity.ok(WalletResponseAssembler.toResponse(result));
+        return ResponseEntity.ok(WalletResourceAssembler.toResource(result));
     }
 
     @GetMapping("/wallets/{walletId}/transactions")
@@ -101,7 +101,7 @@ public class MonetizationController {
                                                    @RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int size) {
         var result = queryService.handle(new GetWalletTransactionHistoryQuery(walletId, page, size));
-        return ResponseEntity.ok(WalletTransactionResponseAssembler.toResponseList(result));
+        return ResponseEntity.ok(WalletTransactionResourceAssembler.toResourceList(result));
     }
 
     @GetMapping("/wallets/{driverId}/can-operate")

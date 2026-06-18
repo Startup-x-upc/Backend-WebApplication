@@ -1,4 +1,4 @@
-package org.example.backendwebapplication.monetization.interfaces.rest.assemblers;
+package org.example.backendwebapplication.monetization.interfaces.rest.transform;
 
 import org.example.backendwebapplication.monetization.domain.model.entities.WalletTransaction;
 import org.example.backendwebapplication.monetization.interfaces.rest.resources.WalletTransactionResponse;
@@ -6,9 +6,9 @@ import org.example.backendwebapplication.monetization.interfaces.rest.resources.
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class WalletTransactionResponseAssembler {
+public class WalletTransactionResourceAssembler {
 
-    public static WalletTransactionResponse toResponse(WalletTransaction transaction) {
+    public static WalletTransactionResponse toResource(WalletTransaction transaction) {
         return new WalletTransactionResponse(
                 transaction.getTransactionId(),
                 transaction.getWalletId(),
@@ -20,9 +20,9 @@ public class WalletTransactionResponseAssembler {
         );
     }
 
-    public static List<WalletTransactionResponse> toResponseList(List<WalletTransaction> transactions) {
+    public static List<WalletTransactionResponse> toResourceList(List<WalletTransaction> transactions) {
         return transactions.stream()
-                .map(WalletTransactionResponseAssembler::toResponse)
+                .map(WalletTransactionResourceAssembler::toResource)
                 .collect(Collectors.toList());
     }
 }
