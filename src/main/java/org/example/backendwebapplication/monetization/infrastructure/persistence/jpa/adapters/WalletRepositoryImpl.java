@@ -1,9 +1,10 @@
-package org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.repositories;
+package org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.adapters;
 
 import org.example.backendwebapplication.monetization.domain.model.aggregates.Wallet;
 import org.example.backendwebapplication.monetization.domain.repositories.WalletRepository;
 import org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.assemblers.WalletPersistenceAssembler;
 import org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.entities.WalletPersistenceEntity;
+import org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.repositories.WalletJpaRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Repository;
 

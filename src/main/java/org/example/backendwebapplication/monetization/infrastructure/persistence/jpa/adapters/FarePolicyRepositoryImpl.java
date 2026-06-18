@@ -1,9 +1,10 @@
-package org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.repositories;
+package org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.adapters;
 
 import org.example.backendwebapplication.monetization.domain.model.aggregates.FarePolicy;
 import org.example.backendwebapplication.monetization.domain.repositories.FarePolicyRepository;
 import org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.assemblers.FarePolicyPersistenceAssembler;
 import org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.entities.FarePolicyPersistenceEntity;
+import org.example.backendwebapplication.monetization.infrastructure.persistence.jpa.repositories.FarePolicyJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
