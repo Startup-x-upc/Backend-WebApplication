@@ -53,9 +53,6 @@ public class DriverPersistenceEntity extends AuditableAbstractPersistenceEntity 
     @Column(name = "active_ride_id", length = 36)
     private String activeRideId;
 
-    @Column(name = "current_location")
-    private String currentLocation;
-
     @Column(name = "restriction_reason")
     private String restrictionReason;
 
@@ -74,6 +71,5 @@ public class DriverPersistenceEntity extends AuditableAbstractPersistenceEntity 
     public void setSoatNumber(String soatNumber) { this.soatNumber = soatNumber; }
     public void setBusy(boolean busy) { this.isBusy = busy; }
     public void setActiveRideId(String activeRideId) { this.activeRideId = activeRideId; }
-    public void setCurrentLocation(String currentLocation) { this.currentLocation = currentLocation; }
     public void setRestrictionReason(String restrictionReason) { this.restrictionReason = restrictionReason; }
 }

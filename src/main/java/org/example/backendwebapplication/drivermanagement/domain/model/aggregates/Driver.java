@@ -29,7 +29,6 @@ public class Driver extends AbstractDomainAggregateRoot<Driver> {
     // Dynamic status fields
     private boolean isBusy;
     private UUID activeRideId;
-    private String currentLocation;
     private String restrictionReason;
     
     private Instant createdAt;
@@ -55,7 +54,6 @@ public class Driver extends AbstractDomainAggregateRoot<Driver> {
         this.soatNumber = soatNumber;
         this.isBusy = false;
         this.activeRideId = null;
-        this.currentLocation = "";
         this.restrictionReason = "";
         this.createdAt = Instant.now();
     }
@@ -66,7 +64,7 @@ public class Driver extends AbstractDomainAggregateRoot<Driver> {
     public Driver(UUID driverId, UUID userId, String fullName, String vehicleType,
                   DriverAccessStatus accessStatus, boolean isAvailable, double ratingAverage,
                   int ratingCount, String photoUrl, String licenseNumber, String soatNumber,
-                  boolean isBusy, UUID activeRideId, String currentLocation, String restrictionReason,
+                  boolean isBusy, UUID activeRideId, String restrictionReason,
                   Instant createdAt) {
         this.driverId = driverId;
         this.userId = userId;
@@ -81,7 +79,6 @@ public class Driver extends AbstractDomainAggregateRoot<Driver> {
         this.soatNumber = soatNumber;
         this.isBusy = isBusy;
         this.activeRideId = activeRideId;
-        this.currentLocation = (currentLocation != null) ? currentLocation : "";
         this.restrictionReason = (restrictionReason != null) ? restrictionReason : "";
         this.createdAt = createdAt;
     }
@@ -101,7 +98,6 @@ public class Driver extends AbstractDomainAggregateRoot<Driver> {
     public String getSoatNumber() { return soatNumber; }
     public boolean isBusy() { return isBusy; }
     public UUID getActiveRideId() { return activeRideId; }
-    public String getCurrentLocation() { return currentLocation; }
     public String getRestrictionReason() { return restrictionReason; }
     public Instant getCreatedAt() { return createdAt; }
 
@@ -118,7 +114,6 @@ public class Driver extends AbstractDomainAggregateRoot<Driver> {
     public void setSoatNumber(String soatNumber) { this.soatNumber = soatNumber; }
     public void setBusy(boolean busy) { this.isBusy = busy; }
     public void setActiveRideId(UUID activeRideId) { this.activeRideId = activeRideId; }
-    public void setCurrentLocation(String currentLocation) { this.currentLocation = currentLocation; }
     public void setRestrictionReason(String restrictionReason) { this.restrictionReason = restrictionReason; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 

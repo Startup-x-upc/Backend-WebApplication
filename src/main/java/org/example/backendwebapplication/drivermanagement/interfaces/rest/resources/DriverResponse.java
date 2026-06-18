@@ -17,7 +17,6 @@ public record DriverResponse(
         String soatNumber,
         boolean isBusy,
         UUID activeRideId,
-        String currentLocation,
         String restrictionReason,
         Instant createdAt
 ) {}

@@ -66,7 +66,7 @@ public class DriversController {
             return ErrorResponseAssembler.toErrorResponseFromApplicationError(result.failure().get());
         }
 
-        return ResponseEntity.ok(DriverResourceAssembler.toResource(result.success().get()));
+        return ResponseEntity.ok(DriverResourceAssembler.toAvailabilityResource(result.success().get()));
     }
 
     // ── Restrict Driver (Admin) ───────────────────────────────────────

@@ -26,7 +26,6 @@ public class DriverPersistenceAssembler {
         entity.setSoatNumber(domain.getSoatNumber());
         entity.setBusy(domain.isBusy());
         entity.setActiveRideId(domain.getActiveRideId() != null ? domain.getActiveRideId().toString() : null);
-        entity.setCurrentLocation(domain.getCurrentLocation());
         entity.setRestrictionReason(domain.getRestrictionReason());
         return entity;
     }
@@ -46,7 +45,6 @@ public class DriverPersistenceAssembler {
                 entity.getSoatNumber(),
                 entity.isBusy(),
                 entity.getActiveRideId() != null ? UUID.fromString(entity.getActiveRideId()) : null,
-                entity.getCurrentLocation(),
                 entity.getRestrictionReason(),
                 entity.getCreatedAt() != null ? entity.getCreatedAt().toInstant() : Instant.now()
         );

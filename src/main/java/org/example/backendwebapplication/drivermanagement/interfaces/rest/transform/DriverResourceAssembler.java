@@ -1,6 +1,7 @@
 package org.example.backendwebapplication.drivermanagement.interfaces.rest.transform;
 
 import org.example.backendwebapplication.drivermanagement.domain.model.aggregates.Driver;
+import org.example.backendwebapplication.drivermanagement.interfaces.rest.resources.DriverAvailabilityResponse;
 import org.example.backendwebapplication.drivermanagement.interfaces.rest.resources.DriverResponse;
 
 /**
@@ -26,9 +27,21 @@ public class DriverResourceAssembler {
                 driver.getSoatNumber(),
                 driver.isBusy(),
                 driver.getActiveRideId(),
-                driver.getCurrentLocation(),
                 driver.getRestrictionReason(),
                 driver.getCreatedAt()
+        );
+    }
+
+    public static DriverAvailabilityResponse toAvailabilityResource(Driver driver) {
+        if (driver == null) {
+            return null;
+        }
+        return new DriverAvailabilityResponse(
+                driver.getDriverId(),
+                driver.getUserId(),
+                driver.isAvailable(),
+                driver.isBusy(),
+                driver.getActiveRideId()
         );
     }
 }
