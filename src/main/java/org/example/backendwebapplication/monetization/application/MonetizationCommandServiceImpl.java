@@ -8,6 +8,7 @@ import org.example.backendwebapplication.monetization.domain.model.valueobjects.
 import org.example.backendwebapplication.monetization.domain.repositories.FarePolicyRepository;
 import org.example.backendwebapplication.monetization.domain.repositories.WalletRepository;
 import org.example.backendwebapplication.monetization.domain.repositories.WalletTransactionRepository;
+import org.example.backendwebapplication.iam.interfaces.acl.IamContextFacade;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +21,28 @@ public class MonetizationCommandServiceImpl {
     private final FarePolicyRepository farePolicyRepository;
     private final WalletRepository walletRepository;
     private final WalletTransactionRepository walletTransactionRepository;
+    private final IamContextFacade iamContextFacade;
 
     public MonetizationCommandServiceImpl(FarePolicyRepository farePolicyRepository,
                                           WalletRepository walletRepository,
-                                          WalletTransactionRepository walletTransactionRepository) {
+                                          WalletTransactionRepository walletTransactionRepository,
+                                          IamContextFacade iamContextFacade) {
         this.farePolicyRepository = farePolicyRepository;
         this.walletRepository = walletRepository;
         this.walletTransactionRepository = walletTransactionRepository;
+        this.iamContextFacade = iamContextFacade;
+    }
+
+    @Transactional
+    public Wallet handle(CreateWalletCommand command) {
+        if (!iamContextFacade.existsUserById(command.driverId())) {
+            throw new IllegalArgumentException("Driver user does not exist in IAM");
+        }
+        if (walletRepository.findByDriverId(command.driverId()).isPresent()) {
+            throw new IllegalStateException("Wallet already exists for this driver");
+        }
+        Wallet wallet = new Wallet(command.driverId());
+        return walletRepository.save(wallet);
     }
 
     public FarePolicy handle(ConfigureFarePolicyCommand command) {

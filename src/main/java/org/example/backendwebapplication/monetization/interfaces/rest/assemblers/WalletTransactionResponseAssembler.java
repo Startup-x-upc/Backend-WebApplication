@@ -15,7 +15,8 @@ public class WalletTransactionResponseAssembler {
                 transaction.getTripId(),
                 transaction.getType().name(),
                 transaction.getAmount(),
-                transaction.getResultingBalance()
+                transaction.getResultingBalance(),
+                transaction.getTimestamp()
         );
     }
 

@@ -10,10 +10,12 @@ public class FarePolicyResponseAssembler {
 
     public static FarePolicyResponse toResponse(FarePolicy farePolicy) {
         return new FarePolicyResponse(
+                farePolicy.getFarePolicyId(),
                 farePolicy.getBaseFare(),
                 farePolicy.getPricePerKm(),
                 farePolicy.getMinimumFare(),
-                farePolicy.getCommissionRate()
+                farePolicy.getCommissionRate(),
+                farePolicy.getUpdatedAt()
         );
     }
 

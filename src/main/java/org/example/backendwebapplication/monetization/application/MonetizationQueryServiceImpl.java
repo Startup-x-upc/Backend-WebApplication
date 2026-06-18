@@ -50,8 +50,17 @@ public class MonetizationQueryServiceImpl {
     }
 
     public boolean handle(CanDriverOperateQuery query) {
-        return walletRepository.findByDriverId(query.driverId())
-                .map(Wallet::hasPositiveBalance)
-                .orElse(false);
+        var walletOpt = walletRepository.findByDriverId(query.driverId());
+        if (walletOpt.isEmpty()) {
+            return false;
+        }
+        var wallet = walletOpt.get();
+        if (query.estimatedFare() != null) {
+            FarePolicy policy = farePolicyRepository.getCurrent()
+                    .orElseThrow(() -> new RuntimeException("No fare policy configured"));
+            BigDecimal commission = policy.calculateCommission(query.estimatedFare());
+            return wallet.getBalance().compareTo(commission) >= 0;
+        }
+        return wallet.hasPositiveBalance();
     }
 }
