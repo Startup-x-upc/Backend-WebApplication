@@ -1,7 +1,7 @@
 package org.example.backendwebapplication.monetization.interfaces.acl.events;
 
 import org.example.backendwebapplication.iam.domain.model.events.DriverRegisteredEvent;
-import org.example.backendwebapplication.monetization.application.MonetizationCommandServiceImpl;
+import org.example.backendwebapplication.monetization.application.commandservices.MonetizationCommandService;
 import org.example.backendwebapplication.monetization.domain.model.commands.CreateWalletCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 public class DriverRegisteredEventListener {
 
     private static final Logger log = LoggerFactory.getLogger(DriverRegisteredEventListener.class);
-    private final MonetizationCommandServiceImpl commandService;
+    private final MonetizationCommandService commandService;
 
-    public DriverRegisteredEventListener(MonetizationCommandServiceImpl commandService) {
+    public DriverRegisteredEventListener(MonetizationCommandService commandService) {
         this.commandService = commandService;
     }
 

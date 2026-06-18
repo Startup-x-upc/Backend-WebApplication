@@ -1,7 +1,7 @@
 package org.example.backendwebapplication.monetization.interfaces.rest;
 
-import org.example.backendwebapplication.monetization.application.MonetizationCommandServiceImpl;
-import org.example.backendwebapplication.monetization.application.MonetizationQueryServiceImpl;
+import org.example.backendwebapplication.monetization.application.commandservices.MonetizationCommandService;
+import org.example.backendwebapplication.monetization.application.queryservices.MonetizationQueryService;
 import org.example.backendwebapplication.monetization.domain.model.commands.*;
 import org.example.backendwebapplication.monetization.domain.model.queries.*;
 import org.example.backendwebapplication.monetization.interfaces.rest.transform.FarePolicyResourceAssembler;
@@ -20,11 +20,11 @@ import java.util.UUID;
 @Tag(name = "Monetization", description = "Monetization Bounded Context Endpoints")
 public class MonetizationController {
 
-    private final MonetizationCommandServiceImpl commandService;
-    private final MonetizationQueryServiceImpl queryService;
+    private final MonetizationCommandService commandService;
+    private final MonetizationQueryService queryService;
 
-    public MonetizationController(MonetizationCommandServiceImpl commandService,
-                                  MonetizationQueryServiceImpl queryService) {
+    public MonetizationController(MonetizationCommandService commandService,
+                                  MonetizationQueryService queryService) {
         this.commandService = commandService;
         this.queryService = queryService;
     }

@@ -1,5 +1,6 @@
-package org.example.backendwebapplication.monetization.application;
+package org.example.backendwebapplication.monetization.application.internal.queryservices;
 
+import org.example.backendwebapplication.monetization.application.queryservices.MonetizationQueryService;
 import org.example.backendwebapplication.monetization.domain.model.aggregates.FarePolicy;
 import org.example.backendwebapplication.monetization.domain.model.aggregates.Wallet;
 import org.example.backendwebapplication.monetization.domain.model.entities.WalletTransaction;
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-public class MonetizationQueryServiceImpl {
+public class MonetizationQueryServiceImpl implements MonetizationQueryService {
 
     private final FarePolicyRepository farePolicyRepository;
     private final WalletRepository walletRepository;

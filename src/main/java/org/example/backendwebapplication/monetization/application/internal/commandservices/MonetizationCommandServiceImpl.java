@@ -1,5 +1,7 @@
-package org.example.backendwebapplication.monetization.application;
+package org.example.backendwebapplication.monetization.application.internal.commandservices;
 
+import org.example.backendwebapplication.monetization.application.commandservices.MonetizationCommandService;
+import org.example.backendwebapplication.monetization.application.WalletRechargeResult;
 import org.example.backendwebapplication.monetization.domain.model.aggregates.FarePolicy;
 import org.example.backendwebapplication.monetization.domain.model.aggregates.Wallet;
 import org.example.backendwebapplication.monetization.domain.model.commands.*;
@@ -16,7 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Service
-public class MonetizationCommandServiceImpl {
+public class MonetizationCommandServiceImpl implements MonetizationCommandService {
 
     private final FarePolicyRepository farePolicyRepository;
     private final WalletRepository walletRepository;
