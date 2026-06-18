@@ -45,7 +45,7 @@ public class MonetizationQueryServiceImpl implements MonetizationQueryService {
     }
 
     public List<WalletTransaction> handle(GetWalletTransactionHistoryQuery query) {
-        Wallet wallet = walletRepository.findByDriverId(query.driverId())
+        Wallet wallet = walletRepository.findByWalletId(query.walletId())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         return walletTransactionRepository.findByWalletId(wallet.getWalletId(), query.page(), query.size());
     }

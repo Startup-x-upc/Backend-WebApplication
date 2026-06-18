@@ -3,7 +3,7 @@ package org.example.backendwebapplication.monetization.domain.model.queries;
 import java.util.UUID;
 
 public record GetWalletTransactionHistoryQuery(
-        UUID driverId,
+        UUID walletId,
         int page,
         int size
 ) {}
