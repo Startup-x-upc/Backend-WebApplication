@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @RestController
@@ -60,10 +61,13 @@ public class MonetizationController {
     }
 
     @PostMapping("/wallets/{walletId}/recharge")
-    public ResponseEntity<WalletResponse> rechargeWallet(@PathVariable UUID walletId, @RequestBody TopUpWalletResource resource) {
+    public ResponseEntity<WalletRechargeResponse> rechargeWallet(@PathVariable UUID walletId, @RequestBody TopUpWalletResource resource) {
         var command = new TopUpWalletCommand(walletId, resource.amount());
         var result = commandService.handle(command);
-        return ResponseEntity.ok(WalletResponseAssembler.toResponse(result));
+        return ResponseEntity.ok(new WalletRechargeResponse(
+                WalletResponseAssembler.toResponse(result.wallet()),
+                WalletTransactionResponseAssembler.toResponse(result.transaction())
+        ));
     }
 
     @PostMapping("/wallets/{walletId}/apply-commission")
@@ -101,8 +105,10 @@ public class MonetizationController {
     }
 
     @GetMapping("/wallets/{driverId}/can-operate")
-    public ResponseEntity<CanOperateResponse> canDriverOperate(@PathVariable UUID driverId) {
-        var result = queryService.handle(new CanDriverOperateQuery(driverId));
+    public ResponseEntity<CanOperateResponse> canDriverOperate(
+            @PathVariable UUID driverId,
+            @RequestParam(required = false) BigDecimal estimatedFare) {
+        var result = queryService.handle(new CanDriverOperateQuery(driverId, estimatedFare));
         return ResponseEntity.ok(new CanOperateResponse(driverId, result));
     }
 }
