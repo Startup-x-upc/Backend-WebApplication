@@ -39,10 +39,5 @@ public class IamContextFacadeImpl implements IamContextFacade {
                 .map(user -> user.getRole());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<String> getFullNameByUserId(UUID userId) {
-        return profileRepository.findByUserId(userId)
-                .map(profile -> profile.getFullName());
-    }
+
 }
