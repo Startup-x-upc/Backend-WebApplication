@@ -95,7 +95,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     // ── Login ───────────────────────────────────────────────────────
 
     /**
-     * Authenticates an existing user.
+     * Authenticates user.
      * <p>Returns VALIDATION_ERROR if email not found or password mismatch.
      * The error message is intentionally ambiguous to prevent
      * user enumeration attacks.</p>
