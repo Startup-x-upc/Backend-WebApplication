@@ -23,12 +23,7 @@ public record ApplicationError(
     /**
      * Validation error: input data does not meet constraints
      */
-    public static ApplicationError validationError(String fieldOrConcept, String reason) {
-        return new ApplicationError(
-                "VALIDATION_ERROR",
-                "Validation failed: %s".formatted(fieldOrConcept),
-                reason);
-    }
+
 
     /**
      * Not found error: the requested resource does not exist
