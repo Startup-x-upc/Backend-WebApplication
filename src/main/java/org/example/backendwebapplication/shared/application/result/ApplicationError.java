@@ -53,12 +53,7 @@ public record ApplicationError(
     /**
      * Conflict error: operation cannot be completed due to conflicting state
      */
-    public static ApplicationError conflict(String resource, String reason) {
-        return new ApplicationError(
-                "%s_CONFLICT".formatted(resource.toUpperCase()),
-                "Conflict with %s".formatted(resource),
-                reason);
-    }
+
 
     /**
      * Unexpected error: something went wrong that shouldn't have
