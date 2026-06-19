@@ -12,7 +12,6 @@ import java.util.Collection;
  * domain event registration support without pulling in any JPA or persistence
  * concern. Identity and auditing are intentionally left to the infrastructure layer.</p>
  *
- * <p>All bounded-context domain aggregate roots should extend this class.</p>
  *
  * @param <T> the concrete aggregate root type
  */

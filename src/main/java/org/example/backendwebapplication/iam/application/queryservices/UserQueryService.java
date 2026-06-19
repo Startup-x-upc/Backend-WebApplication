@@ -21,7 +21,7 @@ public interface UserQueryService {
     Optional<User> handle(GetUserByIdQuery query);
 
     /**
-     * Retrieves a User by their email address.
+     * Retrieves a User by their own email address.
      *
      * @param query the query containing the email
      * @return the User, or {@code Optional.empty()} if not found

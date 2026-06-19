@@ -15,9 +15,9 @@ import java.util.UUID;
  * Implementation of {@link IamContextFacade}.
  * <p>Other bounded contexts inject this facade to validate identities
  * without depending on IAM's internal services or repositories directly.</p>
- *
- * <p>All methods are read-only and use the domain repositories directly
- * for efficiency (no need to go through application services).</p>
+ *  *
+ *  * <p>All methods are read-only and use the domain repositories directly
+ *  * for efficiency .</p>
  */
 @Service
 @RequiredArgsConstructor
