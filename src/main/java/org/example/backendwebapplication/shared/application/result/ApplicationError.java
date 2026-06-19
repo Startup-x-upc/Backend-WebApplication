@@ -63,5 +63,10 @@ public record ApplicationError(
     /**
      * Unexpected error: something went wrong that shouldn't have
      */
-
+    public static ApplicationError unexpected(String context, String reason) {
+        return new ApplicationError(
+                "UNEXPECTED_ERROR",
+                "Unexpected error in %s".formatted(context),
+                reason);
+    }
 }
