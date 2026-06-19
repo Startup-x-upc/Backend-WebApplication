@@ -17,7 +17,7 @@ import java.util.UUID;
  * without depending on IAM's internal services or repositories directly.</p>
  *  *
  *  * <p>All methods are read-only and use the domain repositories directly
- *  * for efficiency (no need to go through application services).</p>
+ *  * for efficiency .</p>
  */
 @Service
 @RequiredArgsConstructor
