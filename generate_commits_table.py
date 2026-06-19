@@ -80,8 +80,8 @@ def generate_markdown_table(num_commits=10, branch=None, custom_repo=None):
     if num_commits:
         cmd.extend(['-n', str(num_commits)])
     
-    # Format: hash ||| date ||| subject ||| body \x00
-    cmd.extend(['--date=format:%d/%m/%Y', '--format=%h|||%ad|||%s|||%b%x00'])
+    # Format: hash ||| date ||| author ||| subject ||| body \x00
+    cmd.extend(['--date=format:%d/%m/%Y', '--format=%h|||%ad|||%an|||%s|||%b%x00'])
     
     try:
         output = subprocess.check_output(cmd, text=True)
@@ -96,6 +96,7 @@ def generate_markdown_table(num_commits=10, branch=None, custom_repo=None):
         "Commit Id",
         "Commit Message",
         "Commit Message Body",
+        "Author",
         "Commited on (Date)"
     ]
     
@@ -109,13 +110,14 @@ def generate_markdown_table(num_commits=10, branch=None, custom_repo=None):
         c_raw = c_raw.strip()
         if not c_raw:
             continue
-        parts = c_raw.split('|||', 3)
-        if len(parts) < 3:
+        parts = c_raw.split('|||', 4)
+        if len(parts) < 4:
             continue
         commit_id = parts[0].strip()
         date = parts[1].strip()
-        subject = parts[2].strip()
-        body = parts[3].strip() if len(parts) > 3 else ""
+        author = parts[2].strip()
+        subject = parts[3].strip()
+        body = parts[4].strip() if len(parts) > 4 else ""
         
         # Translate / generate the body in Spanish
         translated_body = get_commit_message_body(subject, body)
@@ -124,8 +126,9 @@ def generate_markdown_table(num_commits=10, branch=None, custom_repo=None):
         commit_id_clean = commit_id.replace('|', '\\|')
         subject_clean = subject.replace('|', '\\|')
         translated_body_clean = translated_body.replace('|', '\\|')
+        author_clean = author.replace('|', '\\|')
         
-        row = f"| {repo_name} | {branch_name} | {commit_id_clean} | {subject_clean} | {translated_body_clean} | {date} |"
+        row = f"| {repo_name} | {branch_name} | {commit_id_clean} | {subject_clean} | {translated_body_clean} | {author_clean} | {date} |"
         rows.append(row)
         
     return "\n".join(rows)
