@@ -113,6 +113,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Ably Java SDK -->
+        <dependency>
+            <groupId>io.ably</groupId>
+            <artifactId>ably-java</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
