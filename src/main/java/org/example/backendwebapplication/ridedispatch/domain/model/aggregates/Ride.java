@@ -3,6 +3,7 @@ package org.example.backendwebapplication.ridedispatch.domain.model.aggregates;
 import org.example.backendwebapplication.ridedispatch.domain.model.events.RideAssignedEvent;
 import org.example.backendwebapplication.ridedispatch.domain.model.events.RideCancelledEvent;
 import org.example.backendwebapplication.ridedispatch.domain.model.events.RideCompletedEvent;
+import org.example.backendwebapplication.ridedispatch.domain.model.events.RideStatusAdvancedEvent;
 import org.example.backendwebapplication.ridedispatch.domain.model.valueobjects.RideStatus;
 import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 
@@ -40,7 +41,7 @@ public class Ride extends AbstractDomainAggregateRoot<Ride> {
         this.status = RideStatus.ACCEPTED;
         this.createdAt = Instant.now();
         this.completedAt = null;
-        registerDomainEvent(new RideAssignedEvent(this.id, this.driverId));
+        registerDomainEvent(new RideAssignedEvent(this.id, this.requestId, this.driverId));
     }
 
     public Ride(UUID id, UUID requestId, UUID passengerId, UUID driverId, String origin, String destination,
@@ -85,6 +86,7 @@ public class Ride extends AbstractDomainAggregateRoot<Ride> {
         }
 
         this.status = targetStatus;
+        registerDomainEvent(new RideStatusAdvancedEvent(this.id, this.driverId, this.passengerId, targetStatus));
     }
 
     /**

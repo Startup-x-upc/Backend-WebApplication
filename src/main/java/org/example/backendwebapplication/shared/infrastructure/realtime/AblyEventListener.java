@@ -18,7 +18,6 @@ public class AblyEventListener {
         this.realtimePublisher = realtimePublisher;
     }
 
-    /*
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
     public void onRideRequestCreated(RideRequestCreatedEvent event) {
         try {
@@ -27,9 +26,7 @@ public class AblyEventListener {
             log.error("Error broadcasting RideRequestCreatedEvent to Ably: {}", e.getMessage());
         }
     }
-    */
 
-    /*
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
     public void onDriverApplied(DriverAppliedEvent event) {
         try {
@@ -38,9 +35,7 @@ public class AblyEventListener {
             log.error("Error broadcasting DriverAppliedEvent to Ably: {}", e.getMessage());
         }
     }
-    */
 
-    /*
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
     public void onRideAssigned(RideAssignedEvent event) {
         try {
@@ -52,9 +47,7 @@ public class AblyEventListener {
             log.error("Error broadcasting RideAssignedEvent to Ably: {}", e.getMessage());
         }
     }
-    */
 
-    /*
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
     public void onRideStatusAdvanced(RideStatusAdvancedEvent event) {
         try {
@@ -63,7 +56,6 @@ public class AblyEventListener {
             log.error("Error broadcasting RideStatusAdvancedEvent to Ably: {}", e.getMessage());
         }
     }
-    */
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
     public void onRideCompleted(RideCompletedEvent event) {

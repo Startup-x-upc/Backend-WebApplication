@@ -1,6 +1,8 @@
 package org.example.backendwebapplication.ridedispatch.domain.model.aggregates;
 
 import org.example.backendwebapplication.ridedispatch.domain.model.entities.RideCandidate;
+import org.example.backendwebapplication.ridedispatch.domain.model.events.DriverAppliedEvent;
+import org.example.backendwebapplication.ridedispatch.domain.model.events.RideRequestCreatedEvent;
 import org.example.backendwebapplication.ridedispatch.domain.model.valueobjects.RideStatus;
 import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 
@@ -40,6 +42,7 @@ public class RideRequest extends AbstractDomainAggregateRoot<RideRequest> {
         this.status = RideStatus.OPEN;
         this.isExpired = false;
         this.createdAt = Instant.now();
+        registerDomainEvent(new RideRequestCreatedEvent(this.id, this.passengerId, this.origin, this.destination, this.distanceKm, this.estimatedFare));
     }
 
     public RideRequest(UUID id, UUID passengerId, UUID selectedDriverId, String origin, String destination,
@@ -79,6 +82,7 @@ public class RideRequest extends AbstractDomainAggregateRoot<RideRequest> {
 
         RideCandidate candidate = new RideCandidate(this.id, driverId, driverName, vehicleType, ratingAverage, photoUrl);
         this.candidates.add(candidate);
+        registerDomainEvent(new DriverAppliedEvent(this.id, driverId));
         return candidate;
     }
 
