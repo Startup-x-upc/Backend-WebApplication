@@ -53,9 +53,9 @@ public class OpenApiConfiguration {
                                 .url("http://localhost:8080")
                                 .description("Local Development Environment")))
                 .addSecurityItem(new SecurityRequirement()
-                        .addList("Bearer Authentication"))
+                        .addList("bearerAuth"))
                 .components(new Components()
-                        .addSecuritySchemes("Bearer Authentication", new SecurityScheme()
+                        .addSecuritySchemes("bearerAuth", new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")));

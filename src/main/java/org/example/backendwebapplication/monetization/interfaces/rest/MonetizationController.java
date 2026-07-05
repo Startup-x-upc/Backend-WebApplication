@@ -15,6 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -44,6 +48,9 @@ public class MonetizationController {
     }
 
     @PutMapping("/fare-config")
+    @Operation(summary = "Configure global fare policy (ADMIN only)")
+    @ApiResponse(responseCode = "200", description = "Fare policy updated successfully",
+                 content = @Content(schema = @Schema(implementation = FarePolicyResponse.class)))
     public ResponseEntity<?> configureFarePolicy(@RequestBody ConfigureFarePolicyResource resource) {
         if (!isAdmin()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -66,12 +73,18 @@ public class MonetizationController {
 
     // Wallet endpoints
     @GetMapping("/drivers/{driverId}/wallet")
+    @Operation(summary = "Get wallet by driver ID")
+    @ApiResponse(responseCode = "200", description = "Wallet retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = WalletResponse.class)))
     public ResponseEntity<WalletResponse> getWalletByDriverId(@PathVariable UUID driverId) {
         var result = queryService.handle(new GetWalletByDriverIdQuery(driverId));
         return ResponseEntity.ok(WalletResourceAssembler.toResource(result));
     }
 
     @PostMapping("/wallets/{walletId}/recharge")
+    @Operation(summary = "Recharge a driver wallet")
+    @ApiResponse(responseCode = "200", description = "Wallet recharged successfully",
+                 content = @Content(schema = @Schema(implementation = WalletRechargeResponse.class)))
     public ResponseEntity<?> rechargeWallet(@PathVariable UUID walletId, @RequestBody TopUpWalletResource resource) {
         if (!isAdmin() && !isWalletOwner(walletId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -108,6 +121,9 @@ public class MonetizationController {
     }
 
     @GetMapping("/wallets/{walletId}/transactions")
+    @Operation(summary = "Get transaction history for a wallet")
+    @ApiResponse(responseCode = "200", description = "Transaction history retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = WalletTransactionResponse.class)))
     public ResponseEntity<?> getTransactionHistory(@PathVariable UUID walletId,
                                                    @RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int size) {

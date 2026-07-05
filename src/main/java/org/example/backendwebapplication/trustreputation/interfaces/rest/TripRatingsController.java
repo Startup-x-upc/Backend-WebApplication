@@ -1,6 +1,9 @@
 package org.example.backendwebapplication.trustreputation.interfaces.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.example.backendwebapplication.drivermanagement.interfaces.acl.DriverContextFacade;
@@ -54,6 +57,8 @@ public class TripRatingsController {
 
     @PostMapping("/trips/{tripId}/rate-driver")
     @Operation(summary = "Submit Driver Rating (Passenger rates driver)")
+    @ApiResponse(responseCode = "200", description = "Driver rated successfully",
+                 content = @Content(schema = @Schema(implementation = TripRatingResponse.class)))
     public ResponseEntity<?> rateDriver(@PathVariable UUID tripId, @Valid @RequestBody SubmitDriverRatingResource resource) {
         UUID userId = getAuthenticatedUserId();
         var rating = queryService.handle(new GetTripRatingByTripIdQuery(tripId))
@@ -70,6 +75,8 @@ public class TripRatingsController {
 
     @PostMapping("/trips/{tripId}/rate-passenger")
     @Operation(summary = "Submit Passenger Rating (Driver rates passenger)")
+    @ApiResponse(responseCode = "200", description = "Passenger rated successfully",
+                 content = @Content(schema = @Schema(implementation = TripRatingResponse.class)))
     public ResponseEntity<?> ratePassenger(@PathVariable UUID tripId, @Valid @RequestBody SubmitPassengerRatingResource resource) {
         UUID userId = getAuthenticatedUserId();
         var rating = queryService.handle(new GetTripRatingByTripIdQuery(tripId))
@@ -87,6 +94,8 @@ public class TripRatingsController {
 
     @PostMapping("/trips/{tripId}/skip-driver-rating")
     @Operation(summary = "Skip Driver Rating (Passenger skips driver rating)")
+    @ApiResponse(responseCode = "200", description = "Driver rating skipped successfully",
+                 content = @Content(schema = @Schema(implementation = TripRatingResponse.class)))
     public ResponseEntity<?> skipDriverRating(@PathVariable UUID tripId) {
         UUID userId = getAuthenticatedUserId();
         var rating = queryService.handle(new GetTripRatingByTripIdQuery(tripId))
@@ -103,6 +112,8 @@ public class TripRatingsController {
 
     @PostMapping("/trips/{tripId}/skip-passenger-rating")
     @Operation(summary = "Skip Passenger Rating (Driver skips passenger rating)")
+    @ApiResponse(responseCode = "200", description = "Passenger rating skipped successfully",
+                 content = @Content(schema = @Schema(implementation = TripRatingResponse.class)))
     public ResponseEntity<?> skipPassengerRating(@PathVariable UUID tripId) {
         UUID userId = getAuthenticatedUserId();
         var rating = queryService.handle(new GetTripRatingByTripIdQuery(tripId))
@@ -120,6 +131,8 @@ public class TripRatingsController {
 
     @GetMapping("/trips/{tripId}/rating")
     @Operation(summary = "Get Trip Rating details")
+    @ApiResponse(responseCode = "200", description = "Trip rating details retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = TripRatingResponse.class)))
     public ResponseEntity<?> getTripRating(@PathVariable UUID tripId) {
         UUID userId = getAuthenticatedUserId();
         var rating = queryService.handle(new GetTripRatingByTripIdQuery(tripId))

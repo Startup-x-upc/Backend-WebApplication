@@ -1,6 +1,9 @@
 package org.example.backendwebapplication.ridedispatch.interfaces.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.example.backendwebapplication.drivermanagement.interfaces.acl.DriverContextFacade;
@@ -90,6 +93,8 @@ public class RidesController {
     // ── 1. Create Ride Request ───────────────────────────────────────
     @PostMapping("/rides/requests")
     @Operation(summary = "Create a ride request")
+    @ApiResponse(responseCode = "201", description = "Ride request created successfully",
+                 content = @Content(schema = @Schema(implementation = RideRequestResponse.class)))
     public ResponseEntity<?> createRideRequest(@Valid @RequestBody CreateRideRequestResource resource) {
         if (!isPassenger() && !isAdmin()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -116,6 +121,8 @@ public class RidesController {
     // ── 2. Apply as Candidate ─────────────────────────────────────────
     @PostMapping("/rides/requests/{requestId}/candidates")
     @Operation(summary = "Apply as a candidate driver to a ride request")
+    @ApiResponse(responseCode = "201", description = "Applied as candidate successfully",
+                 content = @Content(schema = @Schema(implementation = RideCandidateResponse.class)))
     public ResponseEntity<?> applyAsCandidate(@PathVariable UUID requestId,
                                               @Valid @RequestBody(required = false) Object body) {
         if (!isDriver() && !isAdmin()) {
@@ -139,6 +146,8 @@ public class RidesController {
     // ── 3. Select Candidate ────────────────────────────────────────────
     @PostMapping("/rides/requests/{requestId}/select")
     @Operation(summary = "Select a driver candidate for the ride request")
+    @ApiResponse(responseCode = "201", description = "Driver selected successfully",
+                 content = @Content(schema = @Schema(implementation = SelectCandidateResponse.class)))
     public ResponseEntity<?> selectCandidate(@PathVariable UUID requestId,
                                              @Valid @RequestBody SelectCandidateResource resource) {
         if (!isPassenger() && !isAdmin()) {
@@ -161,6 +170,8 @@ public class RidesController {
     // ── 4. Advance Ride Status ────────────────────────────────────────
     @PostMapping("/rides/{rideId}/advance")
     @Operation(summary = "Advance the status of the ride")
+    @ApiResponse(responseCode = "200", description = "Ride status advanced successfully",
+                 content = @Content(schema = @Schema(implementation = RideResponse.class)))
     public ResponseEntity<?> advanceRideStatus(@PathVariable UUID rideId,
                                                @Valid @RequestBody AdvanceRideStatusResource resource) {
         if (!isDriver() && !isAdmin()) {
@@ -186,6 +197,8 @@ public class RidesController {
     // ── 5. Cancel Ride ────────────────────────────────────────────────
     @PostMapping("/rides/{rideId}/cancel")
     @Operation(summary = "Cancel the ride")
+    @ApiResponse(responseCode = "200", description = "Ride cancelled successfully",
+                 content = @Content(schema = @Schema(implementation = RideResponse.class)))
     public ResponseEntity<?> cancelRide(@PathVariable UUID rideId) {
         UUID userId = getAuthenticatedUserId();
         UUID requesterId = userId;
@@ -205,6 +218,8 @@ public class RidesController {
     // ── 6. Get Open Ride Requests ────────────────────────────────────
     @GetMapping("/rides/requests")
     @Operation(summary = "Get open ride requests")
+    @ApiResponse(responseCode = "200", description = "Open ride requests retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = RideRequestListResponse.class)))
     public ResponseEntity<?> getOpenRideRequests(@RequestParam(required = false) String status) {
         if (!isDriver() && !isAdmin()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -224,6 +239,8 @@ public class RidesController {
     // ── 7. Get Ride Request By ID ─────────────────────────────────────
     @GetMapping("/rides/requests/{requestId}")
     @Operation(summary = "Get a ride request by ID")
+    @ApiResponse(responseCode = "200", description = "Ride request retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = RideRequestResponse.class)))
     public ResponseEntity<?> getRideRequestById(@PathVariable UUID requestId) {
         var opt = queryService.handle(new GetRideRequestByIdQuery(requestId));
         if (opt.isEmpty()) {
@@ -239,6 +256,8 @@ public class RidesController {
     // ── 8. Get Candidates for Request ─────────────────────────────────
     @GetMapping("/rides/requests/{requestId}/candidates")
     @Operation(summary = "Get candidates for a ride request")
+    @ApiResponse(responseCode = "200", description = "Candidates retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = RideCandidateListResponse.class)))
     public ResponseEntity<?> getCandidatesForRequest(@PathVariable UUID requestId) {
         UUID passengerId = getAuthenticatedUserId();
         var candidates = queryService.handle(new GetCandidatesForRequestQuery(requestId, passengerId));
@@ -251,6 +270,8 @@ public class RidesController {
     // ── 9. Get Driver Active Candidate ────────────────────────────────
     @GetMapping("/drivers/{driverId}/active-candidate")
     @Operation(summary = "Get driver active candidate application")
+    @ApiResponse(responseCode = "200", description = "Active candidate retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = RideCandidateResponse.class)))
     public ResponseEntity<?> getDriverActiveCandidate(@PathVariable UUID driverId) {
         UUID userId = getAuthenticatedUserId();
         UUID loggedInDriverId = driverContextFacade.getDriverIdByUserId(userId).orElse(null);
@@ -268,6 +289,8 @@ public class RidesController {
     // ── 10. Get Active Ride for Driver ───────────────────────────────
     @GetMapping("/drivers/{driverId}/active-ride")
     @Operation(summary = "Get active ride for a driver")
+    @ApiResponse(responseCode = "200", description = "Active ride retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = RideResponse.class)))
     public ResponseEntity<?> getActiveRideForDriver(@PathVariable UUID driverId) {
         UUID userId = getAuthenticatedUserId();
         UUID loggedInDriverId = driverContextFacade.getDriverIdByUserId(userId).orElse(null);
@@ -288,6 +311,8 @@ public class RidesController {
     // ── 11. Get Ride By ID ────────────────────────────────────────────
     @GetMapping("/rides/{rideId}")
     @Operation(summary = "Get a ride by ID")
+    @ApiResponse(responseCode = "200", description = "Ride retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = RideResponse.class)))
     public ResponseEntity<?> getRideById(@PathVariable UUID rideId) {
         var opt = queryService.handle(new GetRideByIdQuery(rideId));
         if (opt.isEmpty()) {
@@ -303,6 +328,8 @@ public class RidesController {
     // ── 12. Get Passenger Trip History ────────────────────────────────
     @GetMapping("/passengers/{passengerId}/trips")
     @Operation(summary = "Get passenger trip history")
+    @ApiResponse(responseCode = "200", description = "Passenger trip history retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = TripHistoryListResponse.class)))
     public ResponseEntity<?> getPassengerTripHistory(@PathVariable UUID passengerId,
                                                      @RequestParam(required = false) String status,
                                                      @RequestParam(defaultValue = "0") int page,
@@ -327,6 +354,8 @@ public class RidesController {
     // ── 13. Get Driver Trip History ───────────────────────────────────
     @GetMapping("/drivers/{driverId}/trips")
     @Operation(summary = "Get driver trip history")
+    @ApiResponse(responseCode = "200", description = "Driver trip history retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = TripHistoryListResponse.class)))
     public ResponseEntity<?> getDriverTripHistory(@PathVariable UUID driverId,
                                                   @RequestParam(required = false) String status,
                                                   @RequestParam(defaultValue = "0") int page,
@@ -351,6 +380,8 @@ public class RidesController {
     // ── 14. Get Driver Availability ──────────────────────────────────
     @GetMapping("/drivers/{driverId}/availability")
     @Operation(summary = "Get driver availability details")
+    @ApiResponse(responseCode = "200", description = "Driver availability retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = DriverAvailabilityResponse.class)))
     public ResponseEntity<?> getDriverAvailability(@PathVariable UUID driverId) {
         var opt = queryService.handle(new GetDriverAvailabilityQuery(driverId));
         if (opt.isEmpty()) {
