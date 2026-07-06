@@ -118,6 +118,27 @@ public class RidesController {
                 .body(RideResourceAssembler.toResource(request, name, photo));
     }
 
+    // ── 1.b. Cancel Ride Request ─────────────────────────────────────
+    @PostMapping("/rides/requests/{requestId}/cancel")
+    @Operation(summary = "Cancel a ride request")
+    @ApiResponse(responseCode = "200", description = "Ride request cancelled successfully",
+                 content = @Content(schema = @Schema(implementation = RideRequestResponse.class)))
+    public ResponseEntity<?> cancelRideRequest(@PathVariable UUID requestId) {
+        if (!isPassenger() && !isAdmin()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("FORBIDDEN", "Solo pasajeros pueden cancelar solicitudes"));
+        }
+        UUID passengerId = getAuthenticatedUserId();
+        var result = commandService.handle(new CancelRideRequestCommand(requestId, passengerId));
+        if (result.isFailure()) {
+            return ErrorResponseAssembler.toErrorResponseFromApplicationError(result.failure().get());
+        }
+        var request = result.success().get();
+        String name = getPassengerName(passengerId);
+        String photo = getPassengerPhotoUrl(passengerId);
+        return ResponseEntity.ok(RideResourceAssembler.toResource(request, name, photo));
+    }
+
     // ── 2. Apply as Candidate ─────────────────────────────────────────
     @PostMapping("/rides/requests/{requestId}/candidates")
     @Operation(summary = "Apply as a candidate driver to a ride request")
@@ -141,6 +162,28 @@ public class RidesController {
         }
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(RideResourceAssembler.toResource(result.success().get()));
+    }
+
+    // ── 2.b. Withdraw Candidacy ───────────────────────────────────────
+    @DeleteMapping("/rides/requests/{requestId}/candidates")
+    @Operation(summary = "Withdraw driver candidacy from a ride request")
+    @ApiResponse(responseCode = "204", description = "Candidacy withdrawn successfully")
+    public ResponseEntity<?> withdrawCandidacy(@PathVariable UUID requestId) {
+        if (!isDriver() && !isAdmin()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("FORBIDDEN", "Solo conductores pueden retirar postulación"));
+        }
+        UUID userId = getAuthenticatedUserId();
+        UUID driverId = driverContextFacade.getDriverIdByUserId(userId).orElse(null);
+        if (driverId == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("DRIVER_NOT_FOUND", "No se encontró registro de conductor para este usuario"));
+        }
+        var result = commandService.handle(new WithdrawCandidateCommand(requestId, driverId));
+        if (result.isFailure()) {
+            return ErrorResponseAssembler.toErrorResponseFromApplicationError(result.failure().get());
+        }
+        return ResponseEntity.noContent().build();
     }
 
     // ── 3. Select Candidate ────────────────────────────────────────────

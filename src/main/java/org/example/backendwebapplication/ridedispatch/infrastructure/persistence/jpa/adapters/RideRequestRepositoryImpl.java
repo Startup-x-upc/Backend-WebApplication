@@ -6,9 +6,12 @@ import org.example.backendwebapplication.ridedispatch.domain.repositories.RideRe
 import org.example.backendwebapplication.ridedispatch.infrastructure.persistence.jpa.assemblers.RideRequestPersistenceAssembler;
 import org.example.backendwebapplication.ridedispatch.infrastructure.persistence.jpa.entities.RideRequestPersistenceEntity;
 import org.example.backendwebapplication.ridedispatch.infrastructure.persistence.jpa.repositories.RideRequestJpaRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,11 +22,14 @@ public class RideRequestRepositoryImpl implements RideRequestRepository {
 
     private final RideRequestJpaRepository jpaRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final long timeoutSeconds;
 
     public RideRequestRepositoryImpl(RideRequestJpaRepository jpaRepository,
-                                     ApplicationEventPublisher eventPublisher) {
+                                     ApplicationEventPublisher eventPublisher,
+                                     @Value("${app.ride.request-timeout-seconds:300}") long timeoutSeconds) {
         this.jpaRepository = jpaRepository;
         this.eventPublisher = eventPublisher;
+        this.timeoutSeconds = timeoutSeconds;
     }
 
     @Override
@@ -54,20 +60,56 @@ public class RideRequestRepositoryImpl implements RideRequestRepository {
 
     @Override
     public Optional<RideRequest> findById(UUID id) {
-        return jpaRepository.findByRideRequestId(id.toString())
+        var opt = jpaRepository.findByRideRequestId(id.toString())
                 .map(RideRequestPersistenceAssembler::toDomain);
+        if (opt.isPresent()) {
+            var request = opt.get();
+            if (shouldExpire(request)) {
+                request.expire();
+                save(request);
+            }
+        }
+        return opt;
     }
 
     @Override
     public Optional<RideRequest> findOpenRequestByPassengerId(UUID passengerId) {
-        return jpaRepository.findFirstByPassengerIdAndStatusAndIsExpiredFalse(passengerId.toString(), RideStatus.OPEN)
+        var opt = jpaRepository.findFirstByPassengerIdAndStatusAndIsExpiredFalse(passengerId.toString(), RideStatus.OPEN)
                 .map(RideRequestPersistenceAssembler::toDomain);
+        if (opt.isPresent()) {
+            var request = opt.get();
+            if (shouldExpire(request)) {
+                request.expire();
+                save(request);
+                return Optional.empty();
+            }
+        }
+        return opt;
     }
 
     @Override
     public List<RideRequest> findAllByStatus(RideStatus status) {
-        return jpaRepository.findAllByStatus(status).stream()
+        var list = jpaRepository.findAllByStatus(status).stream()
                 .map(RideRequestPersistenceAssembler::toDomain)
                 .collect(Collectors.toList());
+        List<RideRequest> result = new ArrayList<>();
+        for (var request : list) {
+            if (status == RideStatus.OPEN && shouldExpire(request)) {
+                request.expire();
+                save(request);
+            } else {
+                result.add(request);
+            }
+        }
+        return result;
+    }
+
+    private boolean shouldExpire(RideRequest request) {
+        if (request.getStatus() == RideStatus.OPEN && !request.isExpired()) {
+            Instant limit = request.getCreatedAt().plusSeconds(timeoutSeconds);
+            return Instant.now().isAfter(limit);
+        }
+        return false;
     }
 }
+

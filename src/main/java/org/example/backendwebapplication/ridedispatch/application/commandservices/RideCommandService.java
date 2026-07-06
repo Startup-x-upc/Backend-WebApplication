@@ -13,4 +13,6 @@ public interface RideCommandService {
     Result<Ride, ApplicationError> handle(SelectCandidateCommand command);
     Result<Ride, ApplicationError> handle(AdvanceRideStatusCommand command);
     Result<Ride, ApplicationError> handle(CancelRideCommand command);
+    Result<RideRequest, ApplicationError> handle(CancelRideRequestCommand command);
+    Result<Void, ApplicationError> handle(WithdrawCandidateCommand command);
 }

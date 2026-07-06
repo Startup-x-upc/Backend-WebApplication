@@ -105,7 +105,7 @@ public class ErrorResponseAssembler {
             case "VALIDATION_ERROR"      -> HttpStatus.BAD_REQUEST;
             case "BUSINESS_RULE_VIOLATION", "ALREADY_BUSY", "ALREADY_HAS_OPEN_REQUEST", 
                  "ALREADY_APPLIED", "DRIVER_NOT_AVAILABLE", "INVALID_TRANSITION", 
-                 "CANNOT_CANCEL", "REQUEST_EXPIRED", "REQUEST_NOT_OPEN" -> HttpStatusCode.valueOf(422);
+                 "CANNOT_CANCEL", "REQUEST_EXPIRED", "REQUEST_NOT_OPEN", "CANDIDATE_NOT_FOUND" -> HttpStatusCode.valueOf(422);
             case "DRIVER_RESTRICTED", "INSUFFICIENT_BALANCE" -> HttpStatus.CONFLICT;
             case "FORBIDDEN"             -> HttpStatus.FORBIDDEN;
             case "UNAUTHORIZED"           -> HttpStatus.UNAUTHORIZED;

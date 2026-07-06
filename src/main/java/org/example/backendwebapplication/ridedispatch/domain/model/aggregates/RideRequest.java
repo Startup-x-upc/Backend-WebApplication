@@ -123,6 +123,32 @@ public class RideRequest extends AbstractDomainAggregateRoot<RideRequest> {
         }
     }
 
+    /**
+     * Cancels the request if it is still open.
+     */
+    public void cancel() {
+        if (this.status != RideStatus.OPEN) {
+            throw new IllegalStateException("REQUEST_NOT_OPEN: La solicitud ya no está abierta");
+        }
+        this.status = RideStatus.CANCELLED;
+    }
+
+    /**
+     * Withdraws driver candidacy from this request.
+     */
+    public void withdrawCandidate(UUID driverId) {
+        if (this.status != RideStatus.OPEN) {
+            throw new IllegalStateException("REQUEST_NOT_OPEN: La solicitud ya no está abierta");
+        }
+        if (this.isExpired) {
+            throw new IllegalStateException("REQUEST_EXPIRED: La solicitud ya expiró");
+        }
+        boolean removed = this.candidates.removeIf(c -> c.getDriverId().equals(driverId));
+        if (!removed) {
+            throw new IllegalArgumentException("CANDIDATE_NOT_FOUND: No eres candidato de esta solicitud");
+        }
+    }
+
     // Getters and Setters
     public UUID getId() { return id; }
     public UUID getPassengerId() { return passengerId; }

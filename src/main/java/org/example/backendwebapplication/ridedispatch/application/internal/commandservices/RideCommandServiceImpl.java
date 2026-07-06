@@ -247,4 +247,47 @@ public class RideCommandServiceImpl implements RideCommandService {
             return Result.failure(new ApplicationError("CANNOT_CANCEL", e.getMessage().replace("CANNOT_CANCEL: ", "")));
         }
     }
+
+    @Override
+    @Transactional
+    public Result<RideRequest, ApplicationError> handle(CancelRideRequestCommand command) {
+        RideRequest request = rideRequestRepository.findById(command.requestId())
+                .orElse(null);
+        if (request == null) {
+            return Result.failure(ApplicationError.notFound("RideRequest", command.requestId().toString()));
+        }
+
+        // Verify request belongs to the passenger
+        if (!request.getPassengerId().equals(command.passengerId())) {
+            return Result.failure(new ApplicationError("FORBIDDEN", "Solo el pasajero que creó la solicitud puede cancelarla"));
+        }
+
+        try {
+            request.cancel();
+            RideRequest saved = rideRequestRepository.save(request);
+            return Result.success(saved);
+        } catch (IllegalStateException e) {
+            return Result.failure(new ApplicationError("REQUEST_NOT_OPEN", e.getMessage()));
+        }
+    }
+
+    @Override
+    @Transactional
+    public Result<Void, ApplicationError> handle(WithdrawCandidateCommand command) {
+        RideRequest request = rideRequestRepository.findById(command.requestId())
+                .orElse(null);
+        if (request == null) {
+            return Result.failure(ApplicationError.notFound("RideRequest", command.requestId().toString()));
+        }
+
+        try {
+            request.withdrawCandidate(command.driverId());
+            rideRequestRepository.save(request);
+            return Result.success(null);
+        } catch (IllegalStateException e) {
+            return Result.failure(new ApplicationError("REQUEST_NOT_OPEN", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return Result.failure(new ApplicationError("CANDIDATE_NOT_FOUND", e.getMessage()));
+        }
+    }
 }

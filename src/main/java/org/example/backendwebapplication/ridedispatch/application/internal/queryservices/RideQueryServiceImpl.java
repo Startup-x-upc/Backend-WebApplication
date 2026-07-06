@@ -34,7 +34,9 @@ public class RideQueryServiceImpl implements RideQueryService {
 
     @Override
     public List<RideRequest> handle(GetOpenRideRequestsQuery query) {
-        return rideRequestRepository.findAllByStatus(RideStatus.OPEN);
+        return rideRequestRepository.findAllByStatus(RideStatus.OPEN).stream()
+                .filter(req -> !req.isExpired())
+                .toList();
     }
 
     @Override
@@ -57,6 +59,7 @@ public class RideQueryServiceImpl implements RideQueryService {
     @Override
     public Optional<RideCandidate> handle(GetDriverActiveCandidateQuery query) {
         return rideRequestRepository.findAllByStatus(RideStatus.OPEN).stream()
+                .filter(req -> !req.isExpired())
                 .flatMap(req -> req.getCandidates().stream())
                 .filter(c -> c.getDriverId().equals(query.driverId()) && c.getStatus() == CandidateStatus.PROPOSED)
                 .findFirst();
