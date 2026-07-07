@@ -30,6 +30,14 @@ public class TripRatingCommandServiceImpl implements TripRatingCommandService {
         eventPublisher.publishEvent(new org.example.backendwebapplication.trustreputation.domain.model.events.DriverReputationUpdatedEvent(driverId, averageScore, totalRatings));
     }
 
+    private void publishPassengerReputationUpdated(UUID passengerId) {
+        Double avg = repository.findAveragePassengerScore(passengerId);
+        Long count = repository.countPassengerRatings(passengerId);
+        double averageScore = avg != null ? avg : 0.0;
+        long totalRatings = count != null ? count : 0L;
+        eventPublisher.publishEvent(new org.example.backendwebapplication.trustreputation.domain.model.events.PassengerReputationUpdatedEvent(passengerId, averageScore, totalRatings));
+    }
+
     @Override
     @Transactional
     public TripRating handle(SubmitDriverRatingCommand command) {
@@ -47,7 +55,9 @@ public class TripRatingCommandServiceImpl implements TripRatingCommandService {
         TripRating tripRating = repository.findByTripId(command.tripId())
                 .orElseThrow(() -> new IllegalArgumentException("NOT_FOUND: TripRating no encontrado"));
         tripRating.ratePassenger(command.score(), command.comment());
-        return repository.save(tripRating);
+        TripRating saved = repository.save(tripRating);
+        publishPassengerReputationUpdated(saved.getPassengerId());
+        return saved;
     }
 
     @Override
@@ -67,7 +77,9 @@ public class TripRatingCommandServiceImpl implements TripRatingCommandService {
         TripRating tripRating = repository.findByTripId(tripId)
                 .orElseThrow(() -> new IllegalArgumentException("NOT_FOUND: TripRating no encontrado"));
         tripRating.skipPassengerRating();
-        return repository.save(tripRating);
+        TripRating saved = repository.save(tripRating);
+        publishPassengerReputationUpdated(saved.getPassengerId());
+        return saved;
     }
 
     @Override

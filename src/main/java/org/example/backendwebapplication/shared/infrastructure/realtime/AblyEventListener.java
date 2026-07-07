@@ -2,6 +2,8 @@ package org.example.backendwebapplication.shared.infrastructure.realtime;
 
 import org.example.backendwebapplication.monetization.domain.model.events.WalletEmptyEvent;
 import org.example.backendwebapplication.ridedispatch.domain.model.events.*;
+import org.example.backendwebapplication.trustreputation.domain.model.events.DriverReputationUpdatedEvent;
+import org.example.backendwebapplication.trustreputation.domain.model.events.PassengerReputationUpdatedEvent;
 import org.example.backendwebapplication.shared.domain.services.RealtimePublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +39,23 @@ public class AblyEventListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
+    public void onDriverWithdrew(DriverWithdrewEvent event) {
+        try {
+            realtimePublisher.publish("ride-request:" + event.requestId(), "candidate.withdrew", event);
+        } catch (Exception e) {
+            log.error("Error broadcasting DriverWithdrewEvent to Ably: {}", e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
     public void onRideAssigned(RideAssignedEvent event) {
         try {
             // Notify the selected driver (actor channel)
             realtimePublisher.publish("driver:" + event.driverId(), "ride.assigned", event);
             // Notify the passenger in the request channel (entity channel)
             realtimePublisher.publish("ride-request:" + event.requestId(), "ride.assigned", event);
+            // Notify all available drivers to remove this request from their open lists
+            realtimePublisher.publish("ride-request:open", "request.assigned", event);
         } catch (Exception e) {
             log.error("Error broadcasting RideAssignedEvent to Ably: {}", e.getMessage());
         }
@@ -81,6 +94,46 @@ public class AblyEventListener {
             realtimePublisher.publish("driver:" + event.driverId(), "wallet.empty", event);
         } catch (Exception e) {
             log.error("Error broadcasting WalletEmptyEvent to Ably: {}", e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
+    public void onRideRequestCancelled(RideRequestCancelledEvent event) {
+        try {
+            realtimePublisher.publish("ride-request:" + event.requestId(), "request.cancelled", event);
+            // Notify all available drivers to remove this request from their open lists
+            realtimePublisher.publish("ride-request:open", "request.cancelled", event);
+        } catch (Exception e) {
+            log.error("Error broadcasting RideRequestCancelledEvent to Ably: {}", e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
+    public void onRideRequestExpired(RideRequestExpiredEvent event) {
+        try {
+            realtimePublisher.publish("ride-request:" + event.requestId(), "request.expired", event);
+            // Notify all available drivers to remove this request from their open lists
+            realtimePublisher.publish("ride-request:open", "request.expired", event);
+        } catch (Exception e) {
+            log.error("Error broadcasting RideRequestExpiredEvent to Ably: {}", e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
+    public void onDriverReputationUpdated(DriverReputationUpdatedEvent event) {
+        try {
+            realtimePublisher.publish("driver:" + event.driverId(), "reputation.updated", event);
+        } catch (Exception e) {
+            log.error("Error broadcasting DriverReputationUpdatedEvent to Ably: {}", e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
+    public void onPassengerReputationUpdated(PassengerReputationUpdatedEvent event) {
+        try {
+            realtimePublisher.publish("passenger:" + event.passengerId(), "reputation.updated", event);
+        } catch (Exception e) {
+            log.error("Error broadcasting PassengerReputationUpdatedEvent to Ably: {}", e.getMessage());
         }
     }
 }

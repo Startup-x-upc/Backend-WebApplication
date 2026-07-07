@@ -2,7 +2,10 @@ package org.example.backendwebapplication.ridedispatch.domain.model.aggregates;
 
 import org.example.backendwebapplication.ridedispatch.domain.model.entities.RideCandidate;
 import org.example.backendwebapplication.ridedispatch.domain.model.events.DriverAppliedEvent;
+import org.example.backendwebapplication.ridedispatch.domain.model.events.DriverWithdrewEvent;
 import org.example.backendwebapplication.ridedispatch.domain.model.events.RideRequestCreatedEvent;
+import org.example.backendwebapplication.ridedispatch.domain.model.events.RideRequestCancelledEvent;
+import org.example.backendwebapplication.ridedispatch.domain.model.events.RideRequestExpiredEvent;
 import org.example.backendwebapplication.ridedispatch.domain.model.valueobjects.RideStatus;
 import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 
@@ -120,6 +123,7 @@ public class RideRequest extends AbstractDomainAggregateRoot<RideRequest> {
     public void expire() {
         if (this.status == RideStatus.OPEN) {
             this.isExpired = true;
+            registerDomainEvent(new RideRequestExpiredEvent(this.id, this.passengerId));
         }
     }
 
@@ -131,6 +135,7 @@ public class RideRequest extends AbstractDomainAggregateRoot<RideRequest> {
             throw new IllegalStateException("REQUEST_NOT_OPEN: La solicitud ya no está abierta");
         }
         this.status = RideStatus.CANCELLED;
+        registerDomainEvent(new RideRequestCancelledEvent(this.id, this.passengerId));
     }
 
     /**
@@ -147,6 +152,7 @@ public class RideRequest extends AbstractDomainAggregateRoot<RideRequest> {
         if (!removed) {
             throw new IllegalArgumentException("CANDIDATE_NOT_FOUND: No eres candidato de esta solicitud");
         }
+        registerDomainEvent(new DriverWithdrewEvent(this.id, driverId));
     }
 
     // Getters and Setters
