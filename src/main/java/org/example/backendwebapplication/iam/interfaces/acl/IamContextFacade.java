@@ -39,4 +39,13 @@ public interface IamContextFacade {
      * @return the full name, or {@code Optional.empty()} if no profile exists
      */
     Optional<String> getFullNameByUserId(UUID userId);
+
+    /**
+     * Returns the photo URL of a user by their UUID.
+     * <p>Reads from the Profile entity associated with the user.</p>
+     *
+     * @param userId the user's business identifier
+     * @return the photo URL, or {@code Optional.empty()} if no profile exists
+     */
+    Optional<String> getPhotoUrlByUserId(UUID userId);
 }

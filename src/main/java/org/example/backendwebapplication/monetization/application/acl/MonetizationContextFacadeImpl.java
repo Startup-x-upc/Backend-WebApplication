@@ -3,8 +3,10 @@ package org.example.backendwebapplication.monetization.application.acl;
 import org.example.backendwebapplication.monetization.interfaces.acl.MonetizationContextFacade;
 import org.example.backendwebapplication.monetization.application.queryservices.MonetizationQueryService;
 import org.example.backendwebapplication.monetization.domain.model.queries.CanDriverOperateQuery;
+import org.example.backendwebapplication.monetization.domain.model.queries.GetCurrentFarePolicyQuery;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -27,6 +29,16 @@ public class MonetizationContextFacadeImpl implements MonetizationContextFacade 
         } catch (Exception e) {
             // If wallet is not found or other error, return false
             return false;
+        }
+    }
+
+    @Override
+    public BigDecimal getMinimumFare() {
+        try {
+            var policy = queryService.handle(new GetCurrentFarePolicyQuery());
+            return policy.getMinimumFare();
+        } catch (Exception e) {
+            return BigDecimal.ZERO;
         }
     }
 }

@@ -43,6 +43,8 @@ public class SecurityConfig {
 
             // Route authorisation
             .authorizeHttpRequests(auth -> auth
+                // Permissive OPTIONS for CORS preflight
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Public endpoints
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/register/passenger").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/register/driver").permitAll()
