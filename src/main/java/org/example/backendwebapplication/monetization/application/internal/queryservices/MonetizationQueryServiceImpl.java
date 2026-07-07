@@ -8,10 +8,12 @@ import org.example.backendwebapplication.monetization.domain.model.queries.*;
 import org.example.backendwebapplication.monetization.domain.repositories.FarePolicyRepository;
 import org.example.backendwebapplication.monetization.domain.repositories.WalletRepository;
 import org.example.backendwebapplication.monetization.domain.repositories.WalletTransactionRepository;
+import org.example.backendwebapplication.drivermanagement.interfaces.acl.DriverContextFacade;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MonetizationQueryServiceImpl implements MonetizationQueryService {
@@ -19,13 +21,16 @@ public class MonetizationQueryServiceImpl implements MonetizationQueryService {
     private final FarePolicyRepository farePolicyRepository;
     private final WalletRepository walletRepository;
     private final WalletTransactionRepository walletTransactionRepository;
+    private final DriverContextFacade driverContextFacade;
 
     public MonetizationQueryServiceImpl(FarePolicyRepository farePolicyRepository,
                                         WalletRepository walletRepository,
-                                        WalletTransactionRepository walletTransactionRepository) {
+                                        WalletTransactionRepository walletTransactionRepository,
+                                        DriverContextFacade driverContextFacade) {
         this.farePolicyRepository = farePolicyRepository;
         this.walletRepository = walletRepository;
         this.walletTransactionRepository = walletTransactionRepository;
+        this.driverContextFacade = driverContextFacade;
     }
 
     public FarePolicy handle(GetCurrentFarePolicyQuery query) {
@@ -40,7 +45,8 @@ public class MonetizationQueryServiceImpl implements MonetizationQueryService {
     }
 
     public Wallet handle(GetWalletByDriverIdQuery query) {
-        return walletRepository.findByDriverId(query.driverId())
+        UUID resolvedId = resolveDriverId(query.driverId());
+        return walletRepository.findByDriverId(resolvedId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
     }
 
@@ -51,7 +57,8 @@ public class MonetizationQueryServiceImpl implements MonetizationQueryService {
     }
 
     public boolean handle(CanDriverOperateQuery query) {
-        var walletOpt = walletRepository.findByDriverId(query.driverId());
+        UUID resolvedId = resolveDriverId(query.driverId());
+        var walletOpt = walletRepository.findByDriverId(resolvedId);
         if (walletOpt.isEmpty()) {
             return false;
         }
@@ -63,5 +70,10 @@ public class MonetizationQueryServiceImpl implements MonetizationQueryService {
             return wallet.getBalance().compareTo(commission) >= 0;
         }
         return wallet.hasPositiveBalance();
+    }
+
+    private UUID resolveDriverId(UUID driverId) {
+        return driverContextFacade.getUserIdByDriverId(driverId)
+                .orElse(driverId);
     }
 }

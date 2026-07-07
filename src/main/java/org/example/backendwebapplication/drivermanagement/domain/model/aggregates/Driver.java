@@ -159,6 +159,22 @@ public class Driver extends AbstractDomainAggregateRoot<Driver> {
     }
 
     /**
+     * Marks the driver as busy with an active ride.
+     */
+    public void markAsBusy(UUID activeRideId) {
+        this.isBusy = true;
+        this.activeRideId = activeRideId;
+    }
+
+    /**
+     * Clears the busy status of the driver.
+     */
+    public void clearBusyStatus() {
+        this.isBusy = false;
+        this.activeRideId = null;
+    }
+
+    /**
      * Syncs display details from Profile.
      */
     public void updateProfile(String fullName, String photoUrl) {

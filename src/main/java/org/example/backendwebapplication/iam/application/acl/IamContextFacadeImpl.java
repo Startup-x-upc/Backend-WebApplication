@@ -45,4 +45,11 @@ public class IamContextFacadeImpl implements IamContextFacade {
         return profileRepository.findByUserId(userId)
                 .map(profile -> profile.getFullName());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<String> getPhotoUrlByUserId(UUID userId) {
+        return profileRepository.findByUserId(userId)
+                .map(profile -> profile.getPhotoUrl());
+    }
 }

@@ -1,6 +1,9 @@
 package org.example.backendwebapplication.drivermanagement.interfaces.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.example.backendwebapplication.drivermanagement.application.commandservices.DriverCommandService;
@@ -13,6 +16,7 @@ import org.example.backendwebapplication.drivermanagement.domain.model.queries.G
 import org.example.backendwebapplication.drivermanagement.domain.model.queries.GetDriverByIdQuery;
 import org.example.backendwebapplication.drivermanagement.domain.model.queries.GetDriverByUserIdQuery;
 import org.example.backendwebapplication.drivermanagement.domain.model.valueobjects.DriverAccessStatus;
+import org.example.backendwebapplication.drivermanagement.interfaces.rest.resources.DriverAvailabilityResponse;
 import org.example.backendwebapplication.drivermanagement.interfaces.rest.resources.DriverListResponse;
 import org.example.backendwebapplication.drivermanagement.interfaces.rest.resources.DriverResponse;
 import org.example.backendwebapplication.drivermanagement.interfaces.rest.resources.RestrictDriverResource;
@@ -48,6 +52,8 @@ public class DriversController {
 
     @PostMapping("/drivers/{id}/toggle-availability")
     @Operation(summary = "Toggle driver availability status")
+    @ApiResponse(responseCode = "200", description = "Driver availability status toggled",
+                 content = @Content(schema = @Schema(implementation = DriverAvailabilityResponse.class)))
     public ResponseEntity<?> toggleAvailability(@PathVariable UUID id) {
         var driverOpt = queryService.handle(new GetDriverByIdQuery(id));
         if (driverOpt.isEmpty()) {
@@ -73,6 +79,8 @@ public class DriversController {
 
     @PostMapping("/drivers/{id}/restrict")
     @Operation(summary = "Restrict a driver (ADMIN only)")
+    @ApiResponse(responseCode = "200", description = "Driver restricted successfully",
+                 content = @Content(schema = @Schema(implementation = DriverResponse.class)))
     public ResponseEntity<?> restrictDriver(@PathVariable UUID id,
                                             @Valid @RequestBody RestrictDriverResource resource) {
         if (!isAdmin()) {
@@ -92,6 +100,8 @@ public class DriversController {
 
     @PostMapping("/drivers/{id}/unrestrict")
     @Operation(summary = "Unrestrict a driver (ADMIN only)")
+    @ApiResponse(responseCode = "200", description = "Driver unrestricted successfully",
+                 content = @Content(schema = @Schema(implementation = DriverResponse.class)))
     public ResponseEntity<?> unrestrictDriver(@PathVariable UUID id) {
         if (!isAdmin()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -110,6 +120,8 @@ public class DriversController {
 
     @GetMapping("/drivers")
     @Operation(summary = "Get all drivers (ADMIN only)")
+    @ApiResponse(responseCode = "200", description = "All drivers retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = DriverListResponse.class)))
     public ResponseEntity<?> getAllDrivers(
             @RequestParam(required = false) String accessStatus,
             @RequestParam(defaultValue = "1") int page,
@@ -155,6 +167,8 @@ public class DriversController {
 
     @GetMapping("/drivers/{id}")
     @Operation(summary = "Get driver by ID")
+    @ApiResponse(responseCode = "200", description = "Driver retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = DriverResponse.class)))
     public ResponseEntity<?> getDriverById(@PathVariable UUID id) {
         var driver = queryService.handle(new GetDriverByIdQuery(id));
         if (driver.isEmpty()) {
@@ -168,6 +182,8 @@ public class DriversController {
 
     @GetMapping("/users/{userId}/driver")
     @Operation(summary = "Get driver by user ID")
+    @ApiResponse(responseCode = "200", description = "Driver retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = DriverResponse.class)))
     public ResponseEntity<?> getDriverByUserId(@PathVariable UUID userId) {
         var driver = queryService.handle(new GetDriverByUserIdQuery(userId));
         if (driver.isEmpty()) {
