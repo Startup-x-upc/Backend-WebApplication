@@ -26,6 +26,14 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
      */
     public FarePolicy() {}
 
+    /**
+     * Constructs a FarePolicy with the specified parameters.
+     * @summary Creates a new fare policy with initial pricing configuration.
+     * @param baseFare The base fare amount.
+     * @param pricePerKm The price per kilometer.
+     * @param minimumFare The minimum fare amount.
+     * @param commissionRate The commission rate applied to fares.
+     */
     public FarePolicy(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare, BigDecimal commissionRate) {
         this.farePolicyId = UUID.randomUUID();
         this.baseFare = baseFare;
