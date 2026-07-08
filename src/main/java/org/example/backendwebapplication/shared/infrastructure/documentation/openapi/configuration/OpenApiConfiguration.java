@@ -29,6 +29,9 @@ public class OpenApiConfiguration {
     @Value("${documentation.application.version}")
     String applicationVersion;
 
+    @Value("${app.openapi.server-url}")
+    String openApiServerUrl;
+
     /**
      * Builds the OpenAPI document used by Swagger UI and client generation tools.
      *
@@ -49,6 +52,9 @@ public class OpenApiConfiguration {
                                 .name("Apache 2.0")
                                 .url("https://www.apache.org/licenses/LICENSE-2.0.html")))
                 .servers(List.of(
+                        new Server()
+                                .url(openApiServerUrl)
+                                .description("Production Environment"),
                         new Server()
                                 .url("http://localhost:8080")
                                 .description("Local Development Environment")))

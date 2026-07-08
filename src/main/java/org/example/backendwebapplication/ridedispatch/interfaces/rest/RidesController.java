@@ -156,6 +156,10 @@ public class RidesController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ErrorResource("DRIVER_NOT_FOUND", "No se encontró registro de conductor para este usuario"));
         }
+        if (driverContextFacade.isDriverRestricted(driverId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
+        }
         var result = commandService.handle(new ApplyAsCandidateCommand(requestId, driverId));
         if (result.isFailure()) {
             return ErrorResponseAssembler.toErrorResponseFromApplicationError(result.failure().get());
@@ -178,6 +182,10 @@ public class RidesController {
         if (driverId == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ErrorResource("DRIVER_NOT_FOUND", "No se encontró registro de conductor para este usuario"));
+        }
+        if (driverContextFacade.isDriverRestricted(driverId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
         }
         var result = commandService.handle(new WithdrawCandidateCommand(requestId, driverId));
         if (result.isFailure()) {
@@ -227,6 +235,10 @@ public class RidesController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ErrorResource("DRIVER_NOT_FOUND", "No se encontró registro de conductor"));
         }
+        if (driverContextFacade.isDriverRestricted(driverId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
+        }
         var result = commandService.handle(new AdvanceRideStatusCommand(rideId, driverId, resource.status()));
         if (result.isFailure()) {
             return ErrorResponseAssembler.toErrorResponseFromApplicationError(result.failure().get());
@@ -246,7 +258,14 @@ public class RidesController {
         UUID userId = getAuthenticatedUserId();
         UUID requesterId = userId;
         if (isDriver()) {
-            requesterId = driverContextFacade.getDriverIdByUserId(userId).orElse(userId);
+            UUID driverId = driverContextFacade.getDriverIdByUserId(userId).orElse(null);
+            if (driverId != null) {
+                if (driverContextFacade.isDriverRestricted(driverId)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
+                }
+                requesterId = driverId;
+            }
         }
         var result = commandService.handle(new CancelRideCommand(rideId, requesterId));
         if (result.isFailure()) {
@@ -267,6 +286,14 @@ public class RidesController {
         if (!isDriver() && !isAdmin()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ErrorResource("FORBIDDEN", "Solo conductores pueden consultar las solicitudes abiertas"));
+        }
+        if (isDriver()) {
+            UUID userId = getAuthenticatedUserId();
+            UUID driverId = driverContextFacade.getDriverIdByUserId(userId).orElse(null);
+            if (driverId != null && driverContextFacade.isDriverRestricted(driverId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
+            }
         }
         var requests = queryService.handle(new GetOpenRideRequestsQuery());
         var responses = requests.stream()
@@ -322,6 +349,10 @@ public class RidesController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ErrorResource("FORBIDDEN", "No puedes consultar datos de otro conductor"));
         }
+        if (driverContextFacade.isDriverRestricted(driverId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
+        }
         var opt = queryService.handle(new GetDriverActiveCandidateQuery(driverId));
         if (opt.isEmpty()) {
             return ResponseEntity.ok(null);
@@ -340,6 +371,10 @@ public class RidesController {
         if (!driverId.equals(loggedInDriverId) && !isAdmin()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ErrorResource("FORBIDDEN", "No puedes consultar datos de otro conductor"));
+        }
+        if (driverContextFacade.isDriverRestricted(driverId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
         }
         var opt = queryService.handle(new GetActiveRideForDriverQuery(driverId));
         if (opt.isEmpty()) {
@@ -403,6 +438,10 @@ public class RidesController {
                                                   @RequestParam(required = false) String status,
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "20") int perPage) {
+        if (driverContextFacade.isDriverRestricted(driverId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
+        }
         var query = new GetDriverTripHistoryQuery(driverId, page, perPage, status);
         var trips = queryService.handle(query);
         long total = queryService.count(query);
@@ -426,6 +465,10 @@ public class RidesController {
     @ApiResponse(responseCode = "200", description = "Driver availability retrieved successfully",
                  content = @Content(schema = @Schema(implementation = DriverAvailabilityResponse.class)))
     public ResponseEntity<?> getDriverAvailability(@PathVariable UUID driverId) {
+        if (driverContextFacade.isDriverRestricted(driverId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResource("DRIVER_RESTRICTED", "No puedes realizar esta acción, cuenta inhabilitada"));
+        }
         var opt = queryService.handle(new GetDriverAvailabilityQuery(driverId));
         if (opt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

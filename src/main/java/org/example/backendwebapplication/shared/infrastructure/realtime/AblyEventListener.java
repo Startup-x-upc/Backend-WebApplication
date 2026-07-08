@@ -1,6 +1,7 @@
 package org.example.backendwebapplication.shared.infrastructure.realtime;
 
 import org.example.backendwebapplication.monetization.domain.model.events.WalletEmptyEvent;
+import org.example.backendwebapplication.drivermanagement.domain.model.events.DriverRestrictedEvent;
 import org.example.backendwebapplication.ridedispatch.domain.model.events.*;
 import org.example.backendwebapplication.trustreputation.domain.model.events.DriverReputationUpdatedEvent;
 import org.example.backendwebapplication.trustreputation.domain.model.events.PassengerReputationUpdatedEvent;
@@ -134,6 +135,15 @@ public class AblyEventListener {
             realtimePublisher.publish("passenger:" + event.passengerId(), "reputation.updated", event);
         } catch (Exception e) {
             log.error("Error broadcasting PassengerReputationUpdatedEvent to Ably: {}", e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = false)
+    public void onDriverRestricted(DriverRestrictedEvent event) {
+        try {
+            realtimePublisher.publish("driver:" + event.driverId(), "driver.restricted", event);
+        } catch (Exception e) {
+            log.error("Error broadcasting DriverRestrictedEvent to Ably: {}", e.getMessage());
         }
     }
 }

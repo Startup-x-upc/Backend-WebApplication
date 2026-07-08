@@ -1,6 +1,7 @@
 package org.example.backendwebapplication.drivermanagement.domain.model.aggregates;
 
 import org.example.backendwebapplication.drivermanagement.domain.model.events.DriverAvailabilityChangedEvent;
+import org.example.backendwebapplication.drivermanagement.domain.model.events.DriverRestrictedEvent;
 import org.example.backendwebapplication.drivermanagement.domain.model.valueobjects.DriverAccessStatus;
 import org.example.backendwebapplication.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 
@@ -148,6 +149,7 @@ public class Driver extends AbstractDomainAggregateRoot<Driver> {
         this.restrictionReason = reason;
         this.isAvailable = false;
         registerDomainEvent(new DriverAvailabilityChangedEvent(this.driverId, false));
+        registerDomainEvent(new DriverRestrictedEvent(this.driverId, reason));
     }
 
     /**
