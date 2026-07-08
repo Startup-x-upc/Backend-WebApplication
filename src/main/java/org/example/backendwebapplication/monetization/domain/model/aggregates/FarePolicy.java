@@ -8,6 +8,11 @@ import org.example.backendwebapplication.shared.domain.model.aggregates.Abstract
 
 public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
 
+    /**
+     * Represents a fare policy aggregate root in the monetization domain.
+     * @summary Defines the pricing rules and commission structure for trip fares.
+     * @see AbstractDomainAggregateRoot
+     */
     private UUID farePolicyId;
     private BigDecimal baseFare;
     private BigDecimal pricePerKm;
@@ -15,8 +20,20 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
     private BigDecimal commissionRate;
     private java.time.Instant updatedAt;
 
+    /**
+     * Default constructor for FarePolicy.
+     * @summary Initializes an empty FarePolicy instance.
+     */
     public FarePolicy() {}
 
+    /**
+     * Constructs a FarePolicy with the specified parameters.
+     * @summary Creates a new fare policy with initial pricing configuration.
+     * @param baseFare The base fare amount.
+     * @param pricePerKm The price per kilometer.
+     * @param minimumFare The minimum fare amount.
+     * @param commissionRate The commission rate applied to fares.
+     */
     public FarePolicy(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare, BigDecimal commissionRate) {
         this.farePolicyId = UUID.randomUUID();
         this.baseFare = baseFare;
@@ -25,6 +42,15 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
         this.commissionRate = commissionRate;
     }
 
+
+    /**
+     * Configures the fare policy with new values.
+     * @summary Updates the fare policy parameters.
+     * @param baseFare The new base fare amount.
+     * @param pricePerKm The new price per kilometer.
+     * @param minimumFare The new minimum fare amount.
+     * @param commissionRate The new commission rate.
+     */
     public void configure(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare, BigDecimal commissionRate) {
         this.baseFare = baseFare;
         this.pricePerKm = pricePerKm;
@@ -32,11 +58,24 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
         this.commissionRate = commissionRate;
     }
 
+    /**
+     * Calculates the total fare based on the distance traveled.
+     * @summary Computes the fare by adding base fare and distance charges, ensuring minimum fare is applied.
+     * @param distanceKm The distance traveled in kilometers.
+     * @return The calculated fare amount.
+     */
     public BigDecimal calculate(BigDecimal distanceKm) {
         BigDecimal calculated = this.baseFare.add(this.pricePerKm.multiply(distanceKm));
         return calculated.compareTo(this.minimumFare) < 0 ? this.minimumFare : calculated;
     }
 
+
+    /**
+     * Calculates the commission for a given fare.
+     * @summary Applies the commission rate to the fare and rounds to two decimal places.
+     * @param fare The fare amount to calculate commission on.
+     * @return The calculated commission amount.
+     */
     public BigDecimal calculateCommission(BigDecimal fare) {
         return fare.multiply(this.commissionRate).setScale(2, java.math.RoundingMode.HALF_UP);
     }

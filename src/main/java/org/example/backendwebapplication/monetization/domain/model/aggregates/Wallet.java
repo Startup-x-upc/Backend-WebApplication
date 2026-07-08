@@ -5,6 +5,12 @@ import org.example.backendwebapplication.shared.domain.model.aggregates.Abstract
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/**
+ * Represents a wallet aggregate root in the monetization domain.
+ * @summary Manages driver wallet balance, transactions, and status.
+ * @see AbstractDomainAggregateRoot
+ * @see WalletStatus
+ */
 public class Wallet extends AbstractDomainAggregateRoot<Wallet> {
 
     private UUID walletId;
@@ -12,8 +18,18 @@ public class Wallet extends AbstractDomainAggregateRoot<Wallet> {
     private BigDecimal balance;
     private WalletStatus status;
 
+    /**
+     * Default constructor for Wallet.
+     * @summary Initializes an empty Wallet instance.
+     */
     public Wallet() {}
 
+
+    /**
+     * Constructs a Wallet for a specific driver.
+     * @summary Creates a new wallet with zero balance and active status.
+     * @param driverId The UUID of the driver owning this wallet.
+     */
     public Wallet(UUID driverId) {
         this.walletId = UUID.randomUUID();
         this.driverId = driverId;

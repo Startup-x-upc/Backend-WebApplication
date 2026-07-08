@@ -18,11 +18,23 @@ public class MonetizationContextFacadeImpl implements MonetizationContextFacade 
 
     private final MonetizationQueryService queryService;
 
+    /**
+     * Constructor for the facade implementation.
+     * @summary Initializes the facade with the required query service.
+     * @param queryService The monetization query service to be used.
+     * @see MonetizationQueryService
+     */
     public MonetizationContextFacadeImpl(MonetizationQueryService queryService) {
         this.queryService = queryService;
     }
-
     @Override
+    /**
+     * Checks if a driver has a positive wallet balance.
+     * @summary Determines whether a driver can operate based on their wallet balance.
+     * @param driverId The UUID of the driver to check.
+     * @return true if the driver has a positive wallet balance, false otherwise.
+     * @see CanDriverOperateQuery
+     */
     public boolean hasDriverPositiveWalletBalance(UUID driverId) {
         try {
             return queryService.handle(new CanDriverOperateQuery(driverId, null));
@@ -33,6 +45,12 @@ public class MonetizationContextFacadeImpl implements MonetizationContextFacade 
     }
 
     @Override
+    /**
+     * Retrieves the current minimum fare.
+     * @summary Gets the minimum fare from the current fare policy.
+     * @return The minimum fare as BigDecimal, or BigDecimal.ZERO if an error occurs.
+     * @see GetCurrentFarePolicyQuery
+     */
     public BigDecimal getMinimumFare() {
         try {
             var policy = queryService.handle(new GetCurrentFarePolicyQuery());
