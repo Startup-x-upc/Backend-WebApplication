@@ -58,6 +58,12 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
         this.commissionRate = commissionRate;
     }
 
+    /**
+     * Calculates the total fare based on the distance traveled.
+     * @summary Computes the fare by adding base fare and distance charges, ensuring minimum fare is applied.
+     * @param distanceKm The distance traveled in kilometers.
+     * @return The calculated fare amount.
+     */
     public BigDecimal calculate(BigDecimal distanceKm) {
         BigDecimal calculated = this.baseFare.add(this.pricePerKm.multiply(distanceKm));
         return calculated.compareTo(this.minimumFare) < 0 ? this.minimumFare : calculated;
