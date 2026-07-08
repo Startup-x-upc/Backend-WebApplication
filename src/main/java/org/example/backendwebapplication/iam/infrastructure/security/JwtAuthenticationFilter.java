@@ -20,7 +20,7 @@ import java.util.UUID;
  * Spring Security filter that intercepts every request and validates
  * the JWT access token from the {@code Authorization: Bearer <token>} header.
  * <p>On success, populates {@link SecurityContextHolder} with the
- * authenticated user's identity and role.</p>
+ * authenticated user's identity.</p>
  */
 @Component
 @RequiredArgsConstructor
