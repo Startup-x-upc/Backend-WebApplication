@@ -24,6 +24,12 @@ public class Wallet extends AbstractDomainAggregateRoot<Wallet> {
      */
     public Wallet() {}
 
+
+    /**
+     * Constructs a Wallet for a specific driver.
+     * @summary Creates a new wallet with zero balance and active status.
+     * @param driverId The UUID of the driver owning this wallet.
+     */
     public Wallet(UUID driverId) {
         this.walletId = UUID.randomUUID();
         this.driverId = driverId;
