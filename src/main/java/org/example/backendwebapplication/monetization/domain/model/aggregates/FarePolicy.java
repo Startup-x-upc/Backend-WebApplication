@@ -42,6 +42,15 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
         this.commissionRate = commissionRate;
     }
 
+
+    /**
+     * Configures the fare policy with new values.
+     * @summary Updates the fare policy parameters.
+     * @param baseFare The new base fare amount.
+     * @param pricePerKm The new price per kilometer.
+     * @param minimumFare The new minimum fare amount.
+     * @param commissionRate The new commission rate.
+     */
     public void configure(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare, BigDecimal commissionRate) {
         this.baseFare = baseFare;
         this.pricePerKm = pricePerKm;
