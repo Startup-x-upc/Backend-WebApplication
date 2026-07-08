@@ -25,7 +25,7 @@ public class ErrorResponseAssembler {
     private ErrorResponseAssembler() {}
 
     /**
-     * 
+     * Maps an ApplicationError to an appropriate HTTP ResponseEntity.
      * Automatically selects the correct HTTP status code based on the error code.
      *
      * @param error the ApplicationError to map
