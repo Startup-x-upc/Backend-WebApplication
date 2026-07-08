@@ -8,6 +8,11 @@ import org.example.backendwebapplication.shared.domain.model.aggregates.Abstract
 
 public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
 
+    /**
+     * Represents a fare policy aggregate root in the monetization domain.
+     * @summary Defines the pricing rules and commission structure for trip fares.
+     * @see AbstractDomainAggregateRoot
+     */
     private UUID farePolicyId;
     private BigDecimal baseFare;
     private BigDecimal pricePerKm;
