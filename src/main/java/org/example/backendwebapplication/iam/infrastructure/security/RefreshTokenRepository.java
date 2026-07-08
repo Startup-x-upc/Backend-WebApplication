@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 /**
- * Spring Data JPA repository for {@link RefreshTokenEntity}.
+ * Spring Data JPA repository {@link RefreshTokenEntity}.
  */
 public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity, Long> {
 
