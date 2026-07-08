@@ -87,7 +87,12 @@ public class GlobalExceptionHandler {
         return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
     }
 
-
+    /**
+     * Final fallback handler for any uncaught exception type.
+     *
+     * @param ex the exception
+     * @return error response with INTERNAL_SERVER_ERROR status
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception ex) {
         var applicationError = ApplicationError.unexpected(
