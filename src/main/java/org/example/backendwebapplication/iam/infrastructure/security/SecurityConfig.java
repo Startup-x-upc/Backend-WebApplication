@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Spring Security configuration for the IAM bounded context.
- * <p>Defines a stateless security model: no HTTP sessions, JWT-based
+ * <p>Defines a stateless security model: no HTTP sessions, JWT
  * authentication via {@link JwtAuthenticationFilter}, and permissive
  * CORS for the frontend.</p>
  */
