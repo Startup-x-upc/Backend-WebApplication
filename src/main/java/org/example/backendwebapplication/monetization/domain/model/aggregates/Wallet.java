@@ -18,6 +18,10 @@ public class Wallet extends AbstractDomainAggregateRoot<Wallet> {
     private BigDecimal balance;
     private WalletStatus status;
 
+    /**
+     * Default constructor for Wallet.
+     * @summary Initializes an empty Wallet instance.
+     */
     public Wallet() {}
 
     public Wallet(UUID driverId) {
