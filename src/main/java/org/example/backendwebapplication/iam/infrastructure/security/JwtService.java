@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * Stateless service for JWT token operations.
  * <p>Access tokens are signed JWTs with 15-minute TTL.
- * Refresh tokens are opaque random strings stored in the database with 7-day TTL.</p>
+ * Refresh tokens are opaque random strings stored in the database.</p>
  */
 @Service
 public class JwtService {
