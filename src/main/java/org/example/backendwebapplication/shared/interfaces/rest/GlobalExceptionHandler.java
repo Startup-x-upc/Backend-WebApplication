@@ -24,6 +24,15 @@ public class GlobalExceptionHandler {
 
     private static final String MESSAGES_BASENAME = "messages";
 
+    private String resolveMessageOrDefault(String key, String defaultValue, Object... args) {
+        try {
+            var bundle = ResourceBundle.getBundle(MESSAGES_BASENAME, LocaleContextHolder.getLocale());
+            if (!bundle.containsKey(key)) return defaultValue;
+            return MessageFormat.format(bundle.getString(key), args);
+        } catch (MissingResourceException ex) {
+            return defaultValue;
+        }
+    }
     
     /**
      * Handles validation exceptions from Spring's request body validation.
