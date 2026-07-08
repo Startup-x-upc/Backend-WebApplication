@@ -86,9 +86,16 @@ public class ErrorResponseAssembler {
         }
     }
 
-
-
-
+    private static String toLocalizedMessageWithFallback(String key, String fallback, Object... args) {
+        Locale locale = LocaleContextHolder.getLocale();
+        try {
+            ResourceBundle bundle = ResourceBundle.getBundle(MESSAGE_BASENAME, locale);
+            if (!bundle.containsKey(key)) return fallback;
+            return MessageFormat.format(bundle.getString(key), args);
+        } catch (MissingResourceException ex) {
+            return fallback;
+        }
+    }
 
     /**
      * Determines the appropriate HTTP status code for a given error code.
