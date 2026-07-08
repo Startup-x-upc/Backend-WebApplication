@@ -69,6 +69,13 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
         return calculated.compareTo(this.minimumFare) < 0 ? this.minimumFare : calculated;
     }
 
+
+    /**
+     * Calculates the commission for a given fare.
+     * @summary Applies the commission rate to the fare and rounds to two decimal places.
+     * @param fare The fare amount to calculate commission on.
+     * @return The calculated commission amount.
+     */
     public BigDecimal calculateCommission(BigDecimal fare) {
         return fare.multiply(this.commissionRate).setScale(2, java.math.RoundingMode.HALF_UP);
     }
