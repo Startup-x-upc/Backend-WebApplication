@@ -7,7 +7,7 @@ import java.util.UUID;
 
 /**
  * Persistence entity for refresh tokens.
- * <p>NOT a domain aggregate — lives exclusively in the infrastructure layer.</p>
+ * <p>NOT a domain aggregate — lives exclusively in the infrastructure .</p>
  */
 @Entity
 @Table(name = "refresh_tokens")
