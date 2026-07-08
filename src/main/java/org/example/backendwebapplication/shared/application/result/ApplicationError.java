@@ -3,7 +3,7 @@ package org.example.backendwebapplication.shared.application.result;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * Represents a structured error that occurred in the application layer.
+ * Represents a structured error that occurred in the application.
  * Designed to be easily mapped to HTTP responses.
  *
  * @param code    A machine-readable error code (e.g., "ACCOUNT_NOT_FOUND", "ACCOUNT_CONFLICT")
