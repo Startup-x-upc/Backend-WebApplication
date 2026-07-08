@@ -5,6 +5,12 @@ import org.example.backendwebapplication.shared.domain.model.aggregates.Abstract
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/**
+ * Represents a wallet aggregate root in the monetization domain.
+ * @summary Manages driver wallet balance, transactions, and status.
+ * @see AbstractDomainAggregateRoot
+ * @see WalletStatus
+ */
 public class Wallet extends AbstractDomainAggregateRoot<Wallet> {
 
     private UUID walletId;
