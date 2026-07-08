@@ -65,11 +65,14 @@ public class GlobalExceptionHandler {
      * @return error response with BAD_REQUEST status
      */
 
-
-
-    
-
-
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
+        var applicationError = ApplicationError.validationError(
+                resolveMessageOrDefault("validation.request.argument", "request-argument"),
+                ex.getMessage() != null ? ex.getMessage()
+                        : resolveMessageOrDefault("validation.request.failed", "Request validation failed"));
+        return ErrorResponseAssembler.toErrorResponseFromApplicationError(applicationError);
+    }
 
     /**
      * Handles unexpected runtime exceptions not caught by specific handlers.
