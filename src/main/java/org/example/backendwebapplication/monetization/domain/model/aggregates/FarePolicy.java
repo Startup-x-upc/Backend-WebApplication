@@ -20,6 +20,10 @@ public class FarePolicy extends AbstractDomainAggregateRoot<FarePolicy> {
     private BigDecimal commissionRate;
     private java.time.Instant updatedAt;
 
+    /**
+     * Default constructor for FarePolicy.
+     * @summary Initializes an empty FarePolicy instance.
+     */
     public FarePolicy() {}
 
     public FarePolicy(BigDecimal baseFare, BigDecimal pricePerKm, BigDecimal minimumFare, BigDecimal commissionRate) {
